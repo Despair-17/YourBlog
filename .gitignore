@@ -1,4 +1,4 @@
 __pycache__
+.idea
 db.sqlite3
 /blog/config.py
-.idea
