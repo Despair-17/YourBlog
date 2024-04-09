@@ -39,7 +39,7 @@ class Posts(models.Model):
         upload_to='posts_images/%Y/%m/%d/',
         blank=True,
         default=None,
-        verbose_name='Основная картинка поста',
+        verbose_name='Картинка поста',
     )
 
     is_published = models.BooleanField(
@@ -58,6 +58,10 @@ class Posts(models.Model):
         verbose_name='Время последнего изменения'
     )
 
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
+
     def __str__(self):
         return self.title
 
@@ -71,6 +75,10 @@ class Categories(models.Model):
         max_length=255,
         verbose_name='Слаг'
     )
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
     def __str__(self):
         return self.name
