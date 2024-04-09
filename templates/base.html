@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'posts/image/icon.png' %}" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'posts/css/styles.css' %}">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="left-section">
+        <a href="#" class="logo-link">
+            <img src="{% static 'posts/image/logo.png' %}" alt="YouBlog" class="logo">
+        </a>
+        <a href="#" class="header-link">О сайте</a>
+        <a href="#" class="header-link">FAQ</a>
+        <a href="#" class="header-link">Начни свой блог</a>
+    </div>
+    <div class="right-section">
+        <div class="search-container">
+            <label for="search"><input type="text" placeholder="Поиск" class="search-input" id="search"></label>
+            <img src="{% static 'posts/image/search.svg' %}" alt="Search" class="search-icon">
+        </div>
+        <a href="#" class="header-link">Расширенный поиск</a>
+        <div class="divider"></div>
+        <a href="#" class="header-link">Войти</a>
+        <a href="#" class="header-link">Регистрация</a>
+    </div>
+</header>
+
+<main class="main-content">
+    {% block navigation %}
+    {% endblock %}
+
+    {% block breadcrumbs %}
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="left-section">
+        <span class="small-text">&copy; 2024 Частичное или полное копирование информации с данного сайта для распространения
+            на других ресурсах, в том числе и бумажных, строго запрещено.</span>
+    </div>
+    <div class="right-section">
+        <a href="#" class="header-link">Обратная связь</a>
+        <div class="social-links">
+            <a href="#" class="social-link"><img src="{% static 'posts/image/vk.png' %}" alt="VK"></a>
+            <a href="#" class="social-link"><img src="{% static 'posts/image/instagram.png' %}" alt="Instagram"></a>
+            <a href="#" class="social-link"><img src="{% static 'posts/image/telegram.png' %}" alt="Telegram"></a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
