@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=100, verbose_name='Заголовок')),
                 ('content', models.TextField(blank=True, verbose_name='Контент')),
                 ('slug', models.SlugField(max_length=255, unique=True, verbose_name='Слаг')),
-                ('image', models.ImageField(blank=True, default=None, upload_to='posts_images/%Y/%m/%d/', verbose_name='Основная картинка поста')),
+                ('images', models.ImageField(blank=True, default=None, upload_to='posts_images/%Y/%m/%d/', verbose_name='Основная картинка поста')),
                 ('is_published', models.BooleanField(choices=[(1, 'Опубликовано'), (0, 'Черновик')], default=0, verbose_name='Статус')),
                 ('time_create', models.DateTimeField(auto_now_add=True, verbose_name='Время создания')),
                 ('time_update', models.DateTimeField(auto_now=True, verbose_name='Время последнего изменения')),
