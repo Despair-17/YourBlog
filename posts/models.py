@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 
-class Posts(models.Model):
+class Post(models.Model):
     class Status(models.IntegerChoices):
         PUBLISHED = (1, 'Опубликовано')
         DRAFT = (0, 'Черновик')
@@ -19,7 +19,7 @@ class Posts(models.Model):
     )
 
     category = models.ForeignKey(
-        'Categories',
+        'Category',
         on_delete=models.PROTECT,
         verbose_name='Категория',
     )
@@ -36,10 +36,10 @@ class Posts(models.Model):
     )
 
     image = models.ImageField(
-        upload_to='posts_images/%Y/%m/%d/',
+        upload_to='post_images/%Y/%m/%d/',
         blank=True,
         default=None,
-        verbose_name='Картинка поста',
+        verbose_name='Изображение',
     )
 
     is_published = models.BooleanField(
@@ -67,7 +67,7 @@ class Posts(models.Model):
         return self.title
 
 
-class Categories(models.Model):
+class Category(models.Model):
     name = models.CharField(
         max_length=100,
         verbose_name='Название категории',

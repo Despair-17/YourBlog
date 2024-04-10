@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from posts.models import Posts
+from posts.models import Post
 
 menu = [
     {'title': 'О сайте', 'slug': 'about'},
