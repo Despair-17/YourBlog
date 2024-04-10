@@ -61,6 +61,7 @@ class Posts(models.Model):
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
+        ordering = ('-time_update', '-time_create')
 
     def __str__(self):
         return self.title
