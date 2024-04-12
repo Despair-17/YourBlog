@@ -12,8 +12,8 @@ class Post(models.Model):
     published = PublishedManager()
 
     class Status(models.IntegerChoices):
-        PUBLISHED = (1, 'Опубликовано')
-        DRAFT = (0, 'Черновик')
+        PUBLISHED = (True, 'Опубликовано')
+        DRAFT = (False, 'Черновик')
 
     title = models.CharField(
         max_length=100,
@@ -51,7 +51,7 @@ class Post(models.Model):
     )
 
     is_published = models.BooleanField(
-        choices=Status.choices,
+        choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),
         default=Status.DRAFT,
         verbose_name='Статус'
     )

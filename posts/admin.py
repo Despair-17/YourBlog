@@ -11,11 +11,12 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'post_image', 'author', 'category', 'slug', 'is_published')
     list_display_links = ('title',)
     list_editable = ('is_published',)
-    list_filter = ('is_published',)
+    list_filter = ('is_published', 'category')
     prepopulated_fields = {'slug': ('title',)}
     list_per_page = 10
     fields = ('title', 'author', 'category', 'content', 'slug', 'image', 'post_image', 'is_published')
     readonly_fields = ('post_image',)
+    actions = ('set_published', 'set_draft')
     save_on_top = True
 
     @admin.display(description='Изображение')
@@ -24,6 +25,16 @@ class PostAdmin(admin.ModelAdmin):
             return mark_safe(f'<a href="{post.image.url}">'
                              f'<img src="{post.image.url}" alt="{post.title}" height=50 width=50></a>')
         return 'Нет картинки'
+
+    @admin.action(description='Опубликовать выбранные записи')
+    def set_published(self, request, queryset):
+        count = queryset.update(is_published=Post.Status.PUBLISHED)
+        self.message_user(request, f'Опубликовано {count} записей.')
+
+    @admin.action(description='Снять с публикации выбранные записи')
+    def set_draft(self, request, queryset):
+        count = queryset.update(is_published=Post.Status.DRAFT)
+        self.message_user(request, f'Сняты {count} записей c публикации.')
 
 
 @admin.register(Category)
