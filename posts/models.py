@@ -2,7 +2,15 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_published=Post.Status.PUBLISHED)
+
+
 class Post(models.Model):
+    objects = models.Manager()
+    published = PublishedManager()
+
     class Status(models.IntegerChoices):
         PUBLISHED = (1, 'Опубликовано')
         DRAFT = (0, 'Черновик')
@@ -61,7 +69,7 @@ class Post(models.Model):
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
-        ordering = ('-time_update', '-time_create')
+        ordering = ('-time_update',)
 
     def __str__(self):
         return self.title
@@ -80,6 +88,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        ordering = ('name',)
 
     def __str__(self):
         return self.name
