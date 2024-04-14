@@ -23,6 +23,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
 ]
