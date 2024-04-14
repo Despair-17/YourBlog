@@ -8,10 +8,11 @@ from .models import Category
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'post_image', 'author', 'category', 'slug', 'is_published')
+    list_display = ('title', 'post_image', 'author', 'category', 'slug', 'is_published', 'time_create', 'time_update')
     list_display_links = ('title',)
     list_editable = ('is_published',)
     list_filter = ('is_published', 'category')
+    search_fields = ('title', 'author__username')
     prepopulated_fields = {'slug': ('title',)}
     list_per_page = 10
     fields = ('title', 'author', 'category', 'content', 'slug', 'image', 'post_image', 'is_published')
@@ -22,7 +23,7 @@ class PostAdmin(admin.ModelAdmin):
     @admin.display(description='Изображение')
     def post_image(self, post: Post):
         if post.image.url:
-            return mark_safe(f'<a href="{post.image.url}">'
+            return mark_safe(f'<a href="{post.image.url}" target="_blank">'
                              f'<img src="{post.image.url}" alt="{post.title}" height=50 width=50></a>')
         return 'Нет картинки'
 
@@ -41,6 +42,7 @@ class PostAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     list_display_links = ('name',)
+    search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
     list_per_page = 10
     fields = ('name', 'slug')
