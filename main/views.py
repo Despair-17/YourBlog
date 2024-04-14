@@ -3,21 +3,16 @@ from django.db.models import F, Window
 
 from django.views.generic import TemplateView
 
-from posts.models import Post, Category
+from posts.models import Post
 
-menu = [
-    {'title': 'О сайте', 'slug': 'about'},
-    {'title': 'FAQ', 'slug': 'faq'},
-    {'title': 'Начни свой блог', 'slug': '#'},
-]
+from .models import About, FAQ
+
+from .utils import DataMixin
 
 
-class HomePageView(TemplateView):
+class HomePageView(DataMixin, TemplateView):
     template_name = 'main/index.html'
-    extra_context = {
-        'title': 'YourBlog',
-        'menu': menu,
-    }
+    title_page = 'YourBlog'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -36,6 +31,40 @@ class HomePageView(TemplateView):
         context.update(
             {
                 'posts_by_category': posts_by_category,
+            }
+        )
+        return context
+
+
+class AboutPageView(DataMixin, TemplateView):
+    template_name = 'main/about.html'
+    model = About
+    title_page = 'О сайте'
+    context_object_name = 'about'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        about = About.objects.first()
+        context.update(
+            {
+                'about': about
+            }
+        )
+        return context
+
+
+class FAQPageView(DataMixin, TemplateView):
+    template_name = 'main/faq.html'
+    model = FAQ
+    title_page = 'FAQ'
+    context_object_name = 'faq'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        faq = FAQ.objects.first()
+        context.update(
+            {
+                'faq': faq
             }
         )
         return context

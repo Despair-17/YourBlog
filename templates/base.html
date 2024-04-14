@@ -17,8 +17,11 @@
         <a href="{% url 'home' %}" class="logo-link">
             <img src="{% static 'main/images/logo.png' %}" alt="YouBlog" class="logo">
         </a>
-        <a href="#" class="header-link">О сайте</a>
-        <a href="#" class="header-link">FAQ</a>
+        {% for m in menu %}
+            <a href="{% url m.url_name %}" class="header-link">{{ m.title }}</a>
+        {% endfor %}
+        {#        <a href="{% url 'about' %}" class="header-link">О сайте</a>#}
+        {#        <a href="#" class="header-link">FAQ</a>#}
         <a href="#" class="header-link">Начни свой блог</a>
     </div>
     <div class="right-section">
