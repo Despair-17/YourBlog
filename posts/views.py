@@ -1,17 +1,15 @@
 from django.views.generic import ListView
+from django.shortcuts import get_object_or_404
 
 from .models import Post, Category
 
 from main.utils import DataMixin
 
-from django.shortcuts import get_object_or_404
-
 
 class PostsByCategoryView(DataMixin, ListView):
     template_name = 'posts/posts_by_category.html'
     context_object_name = 'posts_list'
-
-    # paginate_by = 4
+    paginate_by = 8
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

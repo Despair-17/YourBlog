@@ -259,29 +259,36 @@ body, html {
 .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-bottom: 20px; /* Отступ снизу от footer */
 }
 
 .pagination-list {
     list-style-type: none;
     padding: 0;
+    margin: 0;
     display: flex;
 }
 
 .pagination-item {
-    margin: 0 5px;
+    margin: 0 5px; /* Отступ между элементами */
 }
 
 .pagination-link {
     display: inline-block;
-    padding: 8px 12px;
-    color: #fff;
-    background-color: #333;
-    border-radius: 5px;
+    width: 30px; /* Ширина квадратных кнопок */
+    height: 30px; /* Высота квадратных кнопок */
+    text-align: center;
+    line-height: 30px; /* Выравнивание по вертикали */
+    border: 1px solid #ccc; /* Обводка */
+    border-radius: 5px; /* Скругление углов */
+    background-color: #333; /* Цвет фона */
+    color: #fff; /* Цвет текста */
     text-decoration: none;
-    transition: background-color 0.3s;
+    transition: color 0.3s ease;
 }
 
 .pagination-link:hover {
-    background-color: #555;
+    background-color: #444; /* Фон при наведении */
+    color: #ff0000;
 }
+
