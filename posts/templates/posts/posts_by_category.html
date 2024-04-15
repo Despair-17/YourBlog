@@ -30,23 +30,29 @@
             <ul class="pagination-list">
                 {% if page_obj.has_previous %}
                     <li class="pagination-item">
-                        <a href="?page=1" class="pagination-link">&lt;&lt;</a>
-                    </li>
-                    <li class="pagination-item">
                         <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">&lt;</a>
                     </li>
                 {% endif %}
-                {% for page in paginator.page_range %}
-                    <li class="pagination-item">
-                        <a href="?page={{ page }}" class="pagination-link">{{ page }}</a>
-                    </li>
+
+                {% for page in paginator_range %}
+                    {% if page == page_obj.number %}
+                        <li class="pagination-item active">
+                            <span class="pagination-link">{{ page }}</span>
+                        </li>
+                    {% elif page == paginator.ELLIPSIS %}
+                        <li class="pagination-item active">
+                            <span class="pagination-link">{{ page }}</span>
+                        </li>
+                    {% else %}
+                        <li class="pagination-item">
+                            <a href="?page={{ page }}" class="pagination-link">{{ page }}</a>
+                        </li>
+                    {% endif %}
                 {% endfor %}
+
                 {% if page_obj.has_next %}
                     <li class="pagination-item">
                         <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">&gt;</a>
-                    </li>
-                    <li class="pagination-item">
-                        <a href="?page={{ paginator.num_pages }}" class="pagination-link">&gt;&gt;</a>
                     </li>
                 {% endif %}
             </ul>

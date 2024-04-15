@@ -1,3 +1,4 @@
+from django.core.paginator import Page
 from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
 
@@ -17,9 +18,11 @@ class PostsByCategoryView(DataMixin, ListView):
 
     def get_queryset(self):
         self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
-        post_list = Post.published.filter(category=self.category)
+        post_list = Post.published.filter(category=self.category).select_related('author')
         return post_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        page: Page = context['page_obj']
+        context['paginator_range'] = page.paginator.get_elided_page_range(page.number)
         return self.get_context_mixin(context, title=self.category.name, category=self.category)
