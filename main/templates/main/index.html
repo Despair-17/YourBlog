@@ -3,7 +3,7 @@
 {% block content %}
     {% for category, posts in posts_by_category.items %}
         <div class="category">
-            <a href="#" class="category-link">{{ category.name }}</a>
+            <a href="{{ category.get_absolute_url }}" class="category-link">{{ category.name }}</a>
         </div>
         <div class="posts-container">
             {% for post in posts %}

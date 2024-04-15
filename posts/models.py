@@ -1,5 +1,6 @@
-from django.contrib.auth import get_user_model
 from django.db import models
+from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 
 class PublishedManager(models.Manager):
@@ -74,6 +75,9 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    # def get_absolute_url(self):
+    #     return reverse('#', kwargs={'post_slug': self.slug})
+
 
 class Category(models.Model):
     name = models.CharField(
@@ -92,3 +96,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'category_slug': self.slug})

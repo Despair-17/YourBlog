@@ -254,3 +254,34 @@ body, html {
 .faq-about-container h1 {
     text-align: center; /* Выравнивание заголовка по центру */
 }
+
+/*Пагинация************************************************************************************************************/
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+}
+
+.pagination-item {
+    margin: 0 5px;
+}
+
+.pagination-link {
+    display: inline-block;
+    padding: 8px 12px;
+    color: #fff;
+    background-color: #333;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.pagination-link:hover {
+    background-color: #555;
+}
