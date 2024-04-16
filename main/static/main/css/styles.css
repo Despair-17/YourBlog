@@ -148,6 +148,7 @@ body, html {
     margin-right: 10px;
     display: flex;
     flex-direction: column;
+    max-height: 700px;
 }
 
 .post-image {
@@ -297,4 +298,36 @@ body, html {
     pointer-events: none;
     background-color: #f2f2f2;
     color: #191919;
+}
+
+/*Пост*****************************************************************************************************************/
+.one-post-container {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    border: 2px solid #ff0000;
+    border-radius: 10px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    margin: 20px auto;
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
+.one-post-container h1 {
+    text-align: center;
+}
+
+.one-post-container img {
+    display: block;
+    margin: 0 auto;
+    max-height: 600px;
+    max-width: 600px;
+}
+
+.one-post-container .author-info {
+    font-weight: bold;
+}
+
+.one-post-container .article-content {
+    font-style: italic;
 }
