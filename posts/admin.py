@@ -14,7 +14,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ('is_published', 'category')
     search_fields = ('title', 'author__username')
     prepopulated_fields = {'slug': ('title',)}
-    list_per_page = 10
+    list_per_page = 25
     fields = ('title', 'author', 'category', 'content', 'slug', 'image', 'post_image', 'is_published')
     readonly_fields = ('post_image',)
     actions = ('set_published', 'set_draft')

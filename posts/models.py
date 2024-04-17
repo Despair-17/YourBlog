@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 
 class PublishedManager(models.Manager):
@@ -65,6 +66,11 @@ class Post(models.Model):
     time_update = models.DateTimeField(
         auto_now=True,
         verbose_name='Время последнего изменения'
+    )
+
+    tags = TaggableManager(
+        blank=True,
+        verbose_name='Теги',
     )
 
     class Meta:

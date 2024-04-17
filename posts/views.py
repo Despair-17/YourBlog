@@ -11,10 +11,7 @@ class PostsByCategoryView(DataMixin, ListView):
     template_name = 'posts/posts_by_category.html'
     context_object_name = 'posts_list'
     paginate_by = 8
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.category = None
+    category = None
 
     def get_queryset(self):
         self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
@@ -33,4 +30,3 @@ class PostView(DataMixin, DetailView):
     model = Post
     slug_url_kwarg = 'post_slug'
     context_object_name = 'post'
-

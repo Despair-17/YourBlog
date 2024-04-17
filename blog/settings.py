@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'posts.apps.PostsConfig',
 
-    'debug_toolbar',
+    'taggit',
     'django_ckeditor_5',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,5 @@ MEDIA_URL = 'media/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TAGGIT_STRIP_UNICODE_WHEN_SLUGIFYING = True
