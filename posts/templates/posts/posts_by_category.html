@@ -7,19 +7,7 @@
     </div>
     <div class="posts-container">
         {% for post in posts_list %}
-            <div class="post">
-                <img src="{{ post.image.url }}" alt="Изображение" class="post-image">
-                <div class="post-details">
-                    <p class="post-text">
-                        {{ post.title }}
-                    </p>
-                    <p class="post-text">Автор:
-                        <a href="#" class="author-link">{{ post.author.username }}</a>
-                    </p>
-                    <p class="post-text">{{ post.content|truncatechars:200 }}</p>
-                    <a href="{{ post.get_absolute_url }}" class="read-more-link">Читать полную статью</a>
-                </div>
-            </div>
+            {% include 'posts/includes/render_post.html' %}
         {% endfor %}
     </div>
 {% endblock %}
