@@ -4,6 +4,8 @@ from django.urls import reverse
 
 from taggit.managers import TaggableManager
 
+from django_ckeditor_5.fields import CKEditor5Field
+
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -35,10 +37,16 @@ class Post(models.Model):
         verbose_name='Категория',
     )
 
-    content = models.TextField(
+    content = CKEditor5Field(
         blank=True,
-        verbose_name='Контент'
+        config_name='extends',
+        verbose_name='Контент',
     )
+
+    # content = models.TextField(
+    #     blank=True,
+    #     verbose_name='Контент'
+    # )
 
     slug = models.SlugField(
         max_length=255,

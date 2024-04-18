@@ -18,6 +18,6 @@
         </p>
         <p class="author-info">Автор: <a href="#" class="author-link">{{ post.author }}</a></p>
         <p class="article-content">Текст статьи:</p>
-        {{ post.content }}
+        {{ post.content|safe }}
     </div>
 {% endblock %}
