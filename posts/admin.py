@@ -8,14 +8,15 @@ from .models import Category
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'post_image', 'author', 'category', 'slug', 'is_published', 'time_create', 'time_update')
+    list_display = ('title', 'post_image', 'author', 'category', 'slug', 'is_published', 'time_create',
+                    'time_update')
     list_display_links = ('title',)
     list_editable = ('is_published',)
     list_filter = ('is_published', 'category')
     search_fields = ('title', 'author__username')
     prepopulated_fields = {'slug': ('title',)}
     list_per_page = 25
-    fields = ('title', 'author', 'category', 'content', 'slug', 'image', 'post_image', 'is_published')
+    fields = ('title', 'author', 'category', 'tags', 'content', 'slug', 'image', 'post_image', 'is_published')
     readonly_fields = ('post_image',)
     actions = ('set_published', 'set_draft')
     save_on_top = True
