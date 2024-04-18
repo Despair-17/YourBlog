@@ -8,6 +8,13 @@ from taggit.models import Tag
 from main.utils import DataMixin
 
 
+class PostView(DataMixin, DetailView):
+    template_name = 'posts/post.html'
+    model = Post
+    slug_url_kwarg = 'post_slug'
+    context_object_name = 'post'
+
+
 class PostsByCategoryView(DataMixin, ListView):
     template_name = 'posts/posts_by_category.html'
     context_object_name = 'posts_list'
@@ -24,13 +31,6 @@ class PostsByCategoryView(DataMixin, ListView):
         page: Page = context['page_obj']
         context['paginator_range'] = page.paginator.get_elided_page_range(page.number)
         return self.get_context_mixin(context, title=self.category.name, category=self.category)
-
-
-class PostView(DataMixin, DetailView):
-    template_name = 'posts/post.html'
-    model = Post
-    slug_url_kwarg = 'post_slug'
-    context_object_name = 'post'
 
 
 class PostsByTagsView(DataMixin, ListView):
