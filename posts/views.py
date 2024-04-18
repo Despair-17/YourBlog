@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 
 from .models import Post, Category
+from taggit.models import Tag
 
 from main.utils import DataMixin
 
@@ -30,3 +31,22 @@ class PostView(DataMixin, DetailView):
     model = Post
     slug_url_kwarg = 'post_slug'
     context_object_name = 'post'
+
+
+class PostsByTagsView(DataMixin, ListView):
+    template_name = 'posts/posts_by_tag.html'
+    model = Post
+    context_object_name = 'posts_list'
+    paginate_by = 8
+    tag = None
+
+    def get_queryset(self):
+        self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+        posts_list = Post.published.filter(tags=self.tag).select_related('author', 'category')
+        return posts_list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page: Page = context['page_obj']
+        context['paginator_range'] = page.paginator.get_elided_page_range(page.number)
+        return self.get_context_mixin(context, title=self.tag.name, tag=self.tag)

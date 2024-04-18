@@ -2,14 +2,14 @@
 
 {% block content %}
     <div class="category">
-        <span>{{ category.name }}</span>
-        {#        <span class="post-count">Всего {{ posts_list|length }} записей</span>#}
+        <span>Тег: {{ tag.name }}</span>
     </div>
     <div class="posts-container">
         {% for post in posts_list %}
             {% include 'posts/includes/render_post.html' %}
         {% endfor %}
     </div>
+
 {% endblock %}
 
 {% block navigation %}

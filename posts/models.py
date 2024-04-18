@@ -72,6 +72,7 @@ class Post(models.Model):
     tags = TaggableManager(
         blank=True,
         verbose_name='Теги',
+        related_name='posts',
     )
 
     class Meta:
