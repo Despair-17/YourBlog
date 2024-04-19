@@ -1,13 +1,13 @@
-from django.core.paginator import Page
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import RowNumber
 from django.db.models import F, Window
 
-from .models import Post, Category
 from taggit.models import Tag
-
 from main.utils import DataMixin
+
+from .models import Post, Category
+from .utils import PaginatedListView
 
 
 class AllCategoriesView(DataMixin, TemplateView):
@@ -28,11 +28,7 @@ class AllCategoriesView(DataMixin, TemplateView):
         for post in posts:
             posts_by_category.setdefault(post.category, []).append(post)
 
-        context.update(
-            {
-                'posts_by_category': posts_by_category,
-            }
-        )
+        context['posts_by_category'] = posts_by_category
         return context
 
 
@@ -43,49 +39,42 @@ class PostView(DataMixin, DetailView):
     context_object_name = 'post'
 
 
-class PostsByCategoryView(DataMixin, ListView):
+class PostsByCategoryView(DataMixin, PaginatedListView):
     template_name = 'posts/posts_by_category.html'
     context_object_name = 'posts_list'
-    paginate_by = 8
     category = None
 
     def get_queryset(self):
         self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
-        post_list = Post.published.filter(category=self.category).select_related('author')
-        return post_list
+        queryset = Post.published.filter(category=self.category).select_related('author')
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        page: Page = context['page_obj']
-        context['paginator_range'] = page.paginator.get_elided_page_range(page.number)
         return self.get_context_mixin(context, title=self.category.name, category=self.category)
 
 
-class PostsByTagsView(DataMixin, ListView):
+class PostsByTagsView(DataMixin, PaginatedListView):
     template_name = 'posts/posts_by_tag.html'
-    model = Post
     context_object_name = 'posts_list'
-    paginate_by = 8
     tag = None
 
     def get_queryset(self):
         self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
-        posts_list = Post.published.filter(tags=self.tag).select_related('author', 'category')
-        return posts_list
+        queryset = Post.published.filter(tags=self.tag).select_related('author', 'category')
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        page: Page = context['page_obj']
-        context['paginator_range'] = page.paginator.get_elided_page_range(page.number)
         return self.get_context_mixin(context, title=self.tag.name, tag=self.tag)
 
 
-class PostsSearchView(ListView):
+class PostsSearchView(DataMixin, PaginatedListView):
     template_name = 'posts/search.html'
-    model = Post
     context_object_name = 'posts_list'
+    title_page = 'Результаты поиска'
 
     def get_queryset(self):
         search_query = self.request.GET.get('search_query')
-        posts_list = Post.published.filter(title__icontains=search_query)
-        return posts_list
+        queryset = Post.published.filter(title__icontains=search_query)
+        return queryset

@@ -3,6 +3,7 @@ from typing import Any
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
     {'title': 'FAQ', 'url_name': 'faq'},
+    {'title': 'Посты по категориям', 'url_name': 'all_categories'}
 ]
 
 
