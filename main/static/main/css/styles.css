@@ -238,8 +238,8 @@ body, html {
     background-color: #777;
 }
 
-/*О сайте**************************************************************************************************************/
-.faq-about-container {
+/*О сайте, FAQ, main***************************************************************************************************/
+.main-faq-about-container {
     background-color: #333;
     color: #fff;
     padding: 20px;
@@ -252,8 +252,30 @@ body, html {
     /*max-width: 1200px; */
 }
 
-.faq-about-container h1 {
+.main-faq-about-container h1 {
     text-align: center;
+}
+
+.start-blog-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.start-blog-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #ff0000;
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.start-blog-button:hover {
+    background-color: #cc0000;
 }
 
 /*Пагинация************************************************************************************************************/
@@ -331,6 +353,7 @@ body, html {
 .one-post-container .article-content {
     font-style: italic;
 }
+
 .tag_link {
     margin-right: 10px;
 }

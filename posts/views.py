@@ -1,11 +1,39 @@
 from django.core.paginator import Page
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import RowNumber
+from django.db.models import F, Window
 
 from .models import Post, Category
 from taggit.models import Tag
 
 from main.utils import DataMixin
+
+
+class AllCategoriesView(DataMixin, TemplateView):
+    template_name = 'posts/all_categories.html'
+    title_page = 'Все категории'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        window = Window(
+            expression=RowNumber(),
+            partition_by=[F('category__name')],
+            order_by=[F('time_update').desc()]
+        )
+        posts = Post.published.annotate(row_number=window).order_by('category__name')
+        posts = posts.filter(row_number__lte=4).select_related('category', 'author')
+
+        posts_by_category = {}
+        for post in posts:
+            posts_by_category.setdefault(post.category, []).append(post)
+
+        context.update(
+            {
+                'posts_by_category': posts_by_category,
+            }
+        )
+        return context
 
 
 class PostView(DataMixin, DetailView):

@@ -1,8 +1,14 @@
 from django.contrib import admin
 
-from .models import About, FAQ
+from .models import Main, About, FAQ
 
 admin.site.site_header = 'Администрирование YourBlog'
+
+
+@admin.register(Main)
+class AboutAdmin(admin.ModelAdmin):
+    list_display = ('title',)
+    fields = ('title', 'content',)
 
 
 @admin.register(About)

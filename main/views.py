@@ -1,36 +1,21 @@
-from django.db.models.functions import RowNumber
-from django.db.models import F, Window
-
 from django.views.generic import TemplateView
 
-from posts.models import Post
-
-from .models import About, FAQ
-
+from .models import Main, About, FAQ
 from .utils import DataMixin
 
 
 class HomePageView(DataMixin, TemplateView):
     template_name = 'main/index.html'
+    model = Main
     title_page = 'YourBlog'
+    context_object_name = 'main'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        window = Window(
-            expression=RowNumber(),
-            partition_by=[F('category__name')],
-            order_by=[F('time_update').desc()]
-        )
-        posts = Post.published.annotate(row_number=window).order_by('category__name')
-        posts = posts.filter(row_number__lte=4).select_related('category', 'author')
-
-        posts_by_category = {}
-        for post in posts:
-            posts_by_category.setdefault(post.category, []).append(post)
-
+        main = Main.objects.first()
         context.update(
             {
-                'posts_by_category': posts_by_category,
+                'main': main
             }
         )
         return context
