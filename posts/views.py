@@ -50,3 +50,9 @@ class PostsByTagsView(DataMixin, ListView):
         page: Page = context['page_obj']
         context['paginator_range'] = page.paginator.get_elided_page_range(page.number)
         return self.get_context_mixin(context, title=self.tag.name, tag=self.tag)
+
+
+class PostsSearchView(ListView):
+    template_name = 'posts/search.html'
+    model = Post
+    context_object_name = 'posts_list'

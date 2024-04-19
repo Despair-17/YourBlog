@@ -7,7 +7,7 @@
         <p class="post-text">Автор:
             <a href="#" class="author-link">{{ post.author.username }}</a>
         </p>
-        <p class="post-text">{{ post.content|truncatechars:200 }}</p>
+        <p class="post-text">{{ post.content|truncatechars:200|safe }}</p>
         <a href="{{ post.get_absolute_url }}" class="read-more-link">Читать полную статью</a>
     </div>
 </div>
