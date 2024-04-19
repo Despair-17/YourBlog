@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="category">
+        <span>Результаты поиска</span>
+    </div>
+    <div class="posts-container">
+        {% for post in posts_list %}
+            {% include 'posts/includes/render_post.html' %}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -84,3 +84,8 @@ class PostsSearchView(ListView):
     template_name = 'posts/search.html'
     model = Post
     context_object_name = 'posts_list'
+
+    def get_queryset(self):
+        search_query = self.request.GET.get('search_query')
+        posts_list = Post.published.filter(title__icontains=search_query)
+        return posts_list

@@ -20,13 +20,13 @@
         {% for m in menu %}
             <a href="{% url m.url_name %}" class="header-link">{{ m.title }}</a>
         {% endfor %}
-        <a href="#" class="header-link">Начни свой блог</a>
     </div>
     <div class="right-section">
-        <div class="search-container">
-            <label for="search"><input type="text" placeholder="Поиск" class="search-input" id="search"></label>
-            <img src="{% static 'main/images/search.svg' %}" alt="Search" class="search-icon">
-        </div>
+        <form class="search-container" action="{% url 'search' %}" method="GET">
+            <label for="search">
+                <input type="search" placeholder="Поиск" class="search-input" id="search" name="search_query">
+            </label>
+        </form>
         <a href="#" class="header-link">Расширенный поиск</a>
         <div class="divider"></div>
         <a href="#" class="header-link">Войти</a>

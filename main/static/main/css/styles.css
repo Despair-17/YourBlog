@@ -58,23 +58,6 @@ body, html {
     font-size: 18px;
 }
 
-.search-icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-}
-
-.search-options {
-    margin-top: 10px;
-    list-style: none;
-}
-
-.search-options .header-btn {
-    display: block;
-}
-
 .spacer {
     flex-grow: 1;
 }

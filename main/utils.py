@@ -3,7 +3,6 @@ from typing import Any
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
     {'title': 'FAQ', 'url_name': 'faq'},
-    # {'title': 'Начни свой блог', 'url_name': '#'},
 ]
 
 

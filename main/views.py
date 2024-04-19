@@ -41,7 +41,7 @@ class AboutPageView(DataMixin, TemplateView):
 class FAQPageView(DataMixin, TemplateView):
     template_name = 'main/faq.html'
     model = FAQ
-    title_page = 'FAQ'
+    title_page = 'FAQs'
     context_object_name = 'faq'
 
     def get_context_data(self, **kwargs):
