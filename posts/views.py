@@ -78,3 +78,12 @@ class PostsSearchView(DataMixin, PaginatedListView):
         search_query = self.request.GET.get('search_query')
         queryset = Post.published.filter(title__icontains=search_query)
         return queryset
+
+
+class PostsExtendedSearchView(DataMixin, PaginatedListView):
+    template_name = 'posts/extended_search.html'
+    context_object_name = 'posts_list'
+    title_page = 'Поиск'
+
+    def get_queryset(self):
+        ...

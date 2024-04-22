@@ -215,7 +215,6 @@ body, html {
     border-radius: 5px;
 }
 
-/* При наведении на кнопку прокрутки */
 ::-webkit-scrollbar-thumb:hover {
     background-color: #777;
 }
