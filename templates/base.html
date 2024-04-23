@@ -12,29 +12,32 @@
 </head>
 <body>
 
-<header class="site-header">
-    <div class="left-section">
-        <a href="{% url 'home' %}" class="logo-link">
-            <img src="{% static 'main/images/logo.png' %}" alt="YouBlog" class="logo">
+<header class="header">
+    <div class="header-sides">
+        <a href="{% url 'home' %}" class="">
+            <img src="{% static 'main/images/logo.png' %}" alt="YouBlog" class="header-logo">
         </a>
         {% for m in menu %}
-            <a href="{% url m.url_name %}" class="header-link">{{ m.title }}</a>
+            <a href="{% url m.url_name %}" class="menu-link">{{ m.title }}</a>
         {% endfor %}
     </div>
-    <div class="right-section">
-        <form class="search-container" action="{% url 'search' %}" method="GET">
-            <label for="search">
-                <input type="search" placeholder="Поиск" class="search-input" id="search" name="search_query">
-            </label>
-        </form>
-        <a href="{% url 'extended_search' %}" class="header-link">Расширенный поиск</a>
-        <div class="divider"></div>
-        <a href="#" class="header-link">Войти</a>
-        <a href="#" class="header-link">Регистрация</a>
+    <div class="header-sides">
+        <div class="header-search">
+            <form class="" action="{% url 'search' %}" method="GET">
+                <label for="search">
+                    <input type="search" placeholder="Поиск" class="search-input" id="search" name="search_query">
+                </label>
+            </form>
+            <a href="{% url 'extended_search' %}" class="menu-link header-search-extended">Расширенный поиск</a>
+        </div>
+        <div class="header-auth-reg">
+            <a href="#" class="menu-link">Войти</a>|<!--
+            --><a href="#" class="menu-link">Регистрация</a>
+        </div>
     </div>
 </header>
 
-<main class="main-content">
+<main class="main">
 
     {% block breadcrumbs %}
     {% endblock %}
@@ -47,17 +50,17 @@
 
 </main>
 
-<footer class="site-footer">
-    <div class="left-section">
-        <span class="small-text">&copy; 2024 Частичное или полное копирование информации с данного сайта для распространения
+<footer class="footer">
+    <div class="footer-sides">
+        <span>&copy; 2024 Частичное или полное копирование информации с данного сайта для распространения
             на других ресурсах, в том числе и бумажных, строго запрещено.</span>
     </div>
-    <div class="right-section">
-        <a href="#" class="header-link">Обратная связь</a>
-        <div class="social-links">
-            <a href="#" class="social-link"><img src="{% static 'main/images/vk.png' %}" alt="VK"></a>
-            <a href="#" class="social-link"><img src="{% static 'main/images/instagram.png' %}" alt="Instagram"></a>
-            <a href="#" class="social-link"><img src="{% static 'main/images/telegram.png' %}" alt="Telegram"></a>
+    <div class="footer-sides">
+        <a href="#" class="menu-link">Обратная связь</a>
+        <div class="">
+            <a href="#"><img src="{% static 'main/images/vk.png' %}" alt="VK"></a>
+            <a href="#"><img src="{% static 'main/images/instagram.png' %}" alt="Instagram"></a>
+            <a href="#"><img src="{% static 'main/images/telegram.png' %}" alt="Telegram"></a>
         </div>
     </div>
 </footer>

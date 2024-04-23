@@ -1,13 +1,8 @@
-<div class="post">
+<div class="mini-post">
     <img src="{{ post.image.url }}" alt="Изображение" class="post-image">
-    <div class="post-details">
-        <p class="post-text">
-            {{ post.title }}
-        </p>
-        <p class="post-text">Автор:
-            <a href="#" class="author-link">{{ post.author.username }}</a>
-        </p>
-        <p class="post-text">{{ post.content|truncatechars:200|safe }}</p>
-        <a href="{{ post.get_absolute_url }}" class="read-more-link">Читать полную статью</a>
+    <div class="mini-post-text">
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.content|truncatechars:200|safe }}</p>
+        <p><a href="{{ post.get_absolute_url }}" class="link">Читать полную статью</a></p>
     </div>
 </div>

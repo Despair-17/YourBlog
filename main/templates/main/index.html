@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="main-faq-about-container">
-        <h1>{{ main.title }}</h1>
-        {{ main.content|safe }}
-        <div class="start-blog-button-container">
-            <a href="#" class="start-blog-button">Начни свой блог</a>
+    <div class="post-container">
+        <div class="text-container">
+            <h1>{{ main.title }}</h1>
+            {{ main.content|safe }}
+            <div class="start-blog-container">
+                <a href="#" class="menu-link">Начни свой блог</a>
+            </div>
         </div>
     </div>
 {% endblock %}

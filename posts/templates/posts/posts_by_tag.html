@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="category">
-        <span>Тег: {{ tag.name }}</span>
+    <div class="mini-post-info">
+        <h3>Тег: {{ tag.name }}</h3>
     </div>
-    <div class="posts-container">
+    <div class="mini-post-container">
         {% for post in posts_list %}
             {% include 'posts/includes/render_post.html' %}
         {% endfor %}
