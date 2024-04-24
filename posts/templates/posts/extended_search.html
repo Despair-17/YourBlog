@@ -1,10 +1,48 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block breadcrumbs %}
+    <div class="extended-search-container">
+        <form action="{% url 'extended_search' %}" method="GET" class="extended-search-form" id="extendedSearchForm">
+            <div class="category-search">
+                <label for="category"></label>
+                <select id="category" name="category">
+                    <option value="">Выберете категорию</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if tags is not None %}
+                <p>Теги</p>
+                <div class="tag-search">
+                    {% for tag in tags %}
+                        <div class="checkbox">
+                            <input id="{{ tag.id }}" type="checkbox" name="tags" value="{{ tag.id }}">
+                            <label for="{{ tag.id }}">{{ tag.name }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <button type="submit" class="search-button">Искать</button>
+        </form>
+    </div>
+    <script src="{% static 'posts/js/extended_search.js' %}"></script>
 {% endblock %}
 
 {% block content %}
+    {% if posts_list %}
+        <div class="mini-post-info">
+            <h3>Результаты поиска</h3>
+        </div>
+        <div class="mini-post-container">
+            {% for post in posts_list %}
+                {% include 'posts/includes/render_post.html' %}
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block navigation %}
+    {% include 'posts/includes/pagination.html' %}
 {% endblock %}

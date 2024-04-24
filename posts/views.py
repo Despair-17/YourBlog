@@ -1,7 +1,7 @@
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView, ListView
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import RowNumber
-from django.db.models import F, Window
+from django.db.models import F, Window, Count
 
 from taggit.models import Tag
 from main.utils import DataMixin
@@ -22,7 +22,7 @@ class AllCategoriesView(DataMixin, TemplateView):
             order_by=[F('time_update').desc()]
         )
         posts = Post.published.annotate(row_number=window).order_by('category__name')
-        posts = posts.filter(row_number__lte=4).select_related('category', 'author')
+        posts = posts.filter(row_number__lte=4).select_related('category')
 
         posts_by_category = {}
         for post in posts:
@@ -46,7 +46,7 @@ class PostsByCategoryView(DataMixin, PaginatedListView):
 
     def get_queryset(self):
         self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
-        queryset = Post.published.filter(category=self.category).select_related('author')
+        queryset = Post.published.filter(category=self.category)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -80,10 +80,33 @@ class PostsSearchView(DataMixin, PaginatedListView):
         return queryset
 
 
-class PostsExtendedSearchView(DataMixin, PaginatedListView):
+class PostsExtendedSearchView(DataMixin, ListView):
     template_name = 'posts/extended_search.html'
     context_object_name = 'posts_list'
     title_page = 'Поиск'
+    tags = None
 
     def get_queryset(self):
-        ...
+        category = self.request.GET.get('category')
+        tags = self.request.GET.getlist('tags')
+
+        if not category:
+            return []
+
+        queryset = Post.objects.filter(category=category)
+
+        if tags:
+            queryset = (Post.published
+                        .filter(tags__id__in=tags)
+                        .annotate(num_tags=Count('tags__id'))
+                        .filter(num_tags=len(tags)))
+
+        self.tags = Tag.objects.filter(taggit_taggeditem_items__object_id__in=queryset).distinct()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categories = Category.objects.all()
+        context['categories'] = categories
+        context['tags'] = self.tags
+        return context
