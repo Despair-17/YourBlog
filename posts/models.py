@@ -43,11 +43,6 @@ class Post(models.Model):
         verbose_name='Контент',
     )
 
-    # content = models.TextField(
-    #     blank=True,
-    #     verbose_name='Контент'
-    # )
-
     slug = models.SlugField(
         max_length=255,
         unique=True,

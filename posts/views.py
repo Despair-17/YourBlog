@@ -80,7 +80,7 @@ class PostsSearchView(DataMixin, PaginatedListView):
         return queryset
 
 
-class PostsExtendedSearchView(DataMixin, ListView):
+class PostsExtendedSearchView(DataMixin, PaginatedListView):
     template_name = 'posts/extended_search.html'
     context_object_name = 'posts_list'
     title_page = 'Поиск'
