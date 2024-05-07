@@ -15,9 +15,6 @@ class DataMixin:
         if self.title_page:
             self.extra_context['title'] = self.title_page
 
-        if 'memu' not in self.extra_context:
-            self.extra_context['menu'] = menu
-
     @staticmethod
     def get_context_mixin(context: dict[str, Any], **kwargs) -> dict[str, Any]:
         context.update(kwargs)
