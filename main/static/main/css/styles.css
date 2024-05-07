@@ -389,3 +389,111 @@ html, body {
 .search-button:active {
     background-color: #CCCCCC;
 }
+
+/*forms****************************************************************************************************************/
+.items-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: calc(100vh - 178px);
+}
+
+.forms-container {
+    background-color: var(--main-color);
+    color: var(--font-color);
+    width: 380px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.forms-container h3 {
+    text-align: center;
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid var(--font-color);
+    letter-spacing: 0.1em;
+}
+
+.forms-container form {
+    padding: 0 30px;
+    box-sizing: border-box;
+}
+
+form .forms-char {
+    position: relative;
+    border-bottom: 2px solid var(--font-color);
+    letter-spacing: 0.05em;
+    margin: 30px 0;
+}
+
+.forms-char input {
+    width: 306px;
+    padding: 0 5px;
+    height: 40px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    outline: none;
+    color: var(--font-color);
+}
+
+.forms-char label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    color: var(--font-color);
+    transform: translateY(-50%);
+    font-size: 16px;
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+.forms-char span::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--text-link);
+    transition: 0.5s;
+}
+
+.forms-char input:not(:placeholder-shown) ~ label {
+    top: -5px;
+    color: silver;
+}
+
+.forms-char input:focus ~ span::before,
+.forms-char input:valid ~ span::before {
+    width: 100%;
+}
+
+form .forms-links {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.forms-container form button {
+    width: 36%;
+    height: 50px;
+    border: 1px solid;
+    background: var(--font-color);
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: 700;
+    outline: none;
+}
+
+.forms-container form button:hover {
+    background: silver;
+}
+
+.forms-error {
+    list-style: none;
+    color: var(--text-link)
+}

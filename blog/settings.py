@@ -101,6 +101,18 @@ DATABASES = {
     }
 }
 
+# auth
+# https://docs.djangoproject.com/en/4.2/topics/auth/customizing/
+
+AUTH_USER_MODEL = 'users.User'
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'users:login'
+LOGOUT_REDIRECT_URL = 'home'
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -108,15 +120,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    # #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # # },
+    # # {
+    # #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # # },
+    # # {
+    # #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 # Internationalization
@@ -149,10 +161,3 @@ MEDIA_URL = 'media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TAGGIT_STRIP_UNICODE_WHEN_SLUGIFYING = True
-
-# auth
-# https://docs.djangoproject.com/en/4.2/topics/auth/customizing/
-AUTH_USER_MODEL = 'users.User'
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-]

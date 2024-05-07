@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
 from django.urls import reverse
 
 from taggit.managers import TaggableManager
@@ -8,7 +9,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 
 
 class PublishedManager(models.Manager):
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet['Post']:
         return super().get_queryset().filter(is_published=Post.Status.PUBLISHED)
 
 
@@ -83,10 +84,10 @@ class Post(models.Model):
         verbose_name_plural = 'Посты'
         ordering = ('-time_update',)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse('post', kwargs={'post_slug': self.slug})
 
 
@@ -105,8 +106,8 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
         ordering = ('name',)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse('category', kwargs={'category_slug': self.slug})

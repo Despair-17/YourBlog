@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.views.generic import TemplateView
 
 from .models import Main, About, FAQ
@@ -9,7 +11,7 @@ class HomePageView(DataMixin, TemplateView):
     model = Main
     title_page = 'YourBlog'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         main = Main.objects.first()
         context['main'] = main
@@ -21,7 +23,7 @@ class AboutPageView(DataMixin, TemplateView):
     model = About
     title_page = 'О сайте'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         about = About.objects.first()
         context['about'] = about
@@ -33,7 +35,7 @@ class FAQPageView(DataMixin, TemplateView):
     model = FAQ
     title_page = 'FAQs'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         faq = FAQ.objects.first()
         context['faq'] = faq

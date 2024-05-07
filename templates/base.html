@@ -30,10 +30,17 @@
             </form>
             <a href="{% url 'extended_search' %}" class="menu-link header-search-extended">Расширенный поиск</a>
         </div>
-        <div class="header-auth-reg">
-            <a href="#" class="menu-link">Войти</a>|<!--
-            --><a href="#" class="menu-link">Регистрация</a>
-        </div>
+        {% if user.is_authenticated %}
+            <div class="header-auth-reg">
+                <a href="#" class="menu-link">Профиль</a>|<!--
+            --><a href="{% url 'users:logout' %}" class="menu-link">Выйти</a>
+            </div>
+        {% else %}
+            <div class="header-auth-reg">
+                <a href="{% url 'users:login' %}" class="menu-link">Войти</a>|<!--
+            --><a href="{% url 'users:register' %}" class="menu-link">Регистрация</a>
+            </div>
+        {% endif %}
     </div>
 </header>
 

@@ -1,7 +1,9 @@
+from typing import Any
+
 from django.views.generic import DetailView, TemplateView, ListView
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import RowNumber
-from django.db.models import F, Window, Count
+from django.db.models import F, Window, Count, QuerySet
 
 from taggit.models import Tag
 from main.utils import DataMixin
@@ -14,7 +16,7 @@ class AllCategoriesView(DataMixin, TemplateView):
     template_name = 'posts/all_categories.html'
     title_page = 'Все категории'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         window = Window(
             expression=RowNumber(),
@@ -44,12 +46,12 @@ class PostsByCategoryView(DataMixin, PaginatedListView):
     context_object_name = 'posts_list'
     category = None
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Post]:
         self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
         queryset = Post.published.filter(category=self.category)
         return queryset
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         return self.get_context_mixin(context, title=self.category.name, category=self.category)
 
@@ -59,12 +61,12 @@ class PostsByTagsView(DataMixin, PaginatedListView):
     context_object_name = 'posts_list'
     tag = None
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Post]:
         self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
         queryset = Post.published.filter(tags=self.tag).select_related('author', 'category')
         return queryset
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         return self.get_context_mixin(context, title=self.tag.name, tag=self.tag)
 
@@ -74,7 +76,7 @@ class PostsSearchView(DataMixin, PaginatedListView):
     context_object_name = 'posts_list'
     title_page = 'Результаты поиска'
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Post]:
         search_query = self.request.GET.get('search_query')
         queryset = Post.published.filter(title__icontains=search_query)
         return queryset
@@ -86,7 +88,7 @@ class PostsExtendedSearchView(DataMixin, PaginatedListView):
     title_page = 'Поиск'
     tags = None
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Post] | list:
         category = self.request.GET.get('category')
         tags = self.request.GET.getlist('tags')
 
@@ -104,7 +106,7 @@ class PostsExtendedSearchView(DataMixin, PaginatedListView):
         self.tags = Tag.objects.filter(taggit_taggeditem_items__object_id__in=queryset).distinct()
         return queryset
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         categories = Category.objects.all()
         context['categories'] = categories

@@ -19,6 +19,6 @@ class DataMixin:
             self.extra_context['menu'] = menu
 
     @staticmethod
-    def get_context_mixin(context: dict, **kwargs: Any) -> dict:
+    def get_context_mixin(context: dict[str, Any], **kwargs) -> dict[str, Any]:
         context.update(kwargs)
         return context
