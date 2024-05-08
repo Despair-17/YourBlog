@@ -13,12 +13,12 @@
 
             {% for page in paginator_range %}
                 {% if page == page_obj.number %}
-                    <li class="pagination-item active">
-                        <span class="pagination-link">{{ page }}</span>
+                    <li class="pagination-item-active">
+                        <span class="pagination-link-active">{{ page }}</span>
                     </li>
                 {% elif page == paginator.ELLIPSIS %}
-                    <li class="pagination-item active">
-                        <span class="pagination-link">{{ page }}</span>
+                    <li class="pagination-item-active">
+                        <span class="pagination-link-active ellipsis">{{ page }}</span>
                     </li>
                 {% else %}
                     <li class="pagination-item">
