@@ -3,9 +3,9 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
 
-from django.core.exceptions import ValidationError
-
 from django import forms
+
+from users.validators import EmailExistValidator
 
 
 class LoginUserForm(AuthenticationForm):
@@ -30,17 +30,14 @@ class RegisterUserForm(UserCreationForm):
     email = forms.EmailField(
         required=True,
         label='Email',
+        validators=(
+            EmailExistValidator(),
+        )
     )
 
     class Meta:
         model = get_user_model()
         fields = ('username', 'email', 'password1', 'password2')
-
-    def clean_email(self) -> str:
-        email = self.cleaned_data['email']
-        if get_user_model().objects.filter(email=email).exists():
-            raise ValidationError('Email уже занят.')
-        return email
 
 
 class ProfileUserForm(forms.ModelForm):
@@ -53,6 +50,9 @@ class ProfileUserForm(forms.ModelForm):
     email = forms.EmailField(
         required=True,
         label='Email',
+        validators=(
+            EmailExistValidator(),
+        )
     )
 
     this_year = datetime.now().year
