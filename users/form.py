@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
 
 from django.core.exceptions import ValidationError
 
@@ -69,3 +69,21 @@ class ProfileUserForm(forms.ModelForm):
         model = get_user_model()
         fields = ('username', 'email', 'first_name', 'last_name', 'date_birth', 'image')
         labels = {'first_name': 'Имя', 'last_name': 'Фамилия', 'image': 'Фотография'}
+        widgets = {
+            'image': forms.ClearableFileInput(attrs={'class': 'profile-image-select'}),
+        }
+
+
+class PasswordChangeUserForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        widget=forms.PasswordInput(),
+        label='Старый пароль',
+    )
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(),
+        label='Новый пароль',
+    )
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(),
+        label='Повтор нового пароля',
+    )

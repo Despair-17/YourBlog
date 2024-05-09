@@ -20,7 +20,7 @@ class User(AbstractUser):
     )
 
     image = models.ImageField(
-        upload_to='user/%Y/%m/%d/',
+        upload_to='users/%Y/%m/%d/',
         blank=True,
         null=True,
         verbose_name='Фотография',

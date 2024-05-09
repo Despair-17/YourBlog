@@ -3,29 +3,66 @@
 
 {% block content %}
     <div class="profile-container">
-        <div class="profile-image">
-            {% if user.image %}
-                {{ user.image }}
-            {% else %}
-                <img src="{% static 'users/images/no_image.png' %}" alt="Фотография">
-            {% endif %}
-        </div>
-        <div class="profile-info">
-            <h3>Профиль {{ user.username }}</h3>
-            <form method="POST" enctype="multipart/form-data" action="{% url 'users:profile' %}">
+        <form method="POST" enctype="multipart/form-data" action="{% url 'users:profile' %}">
+            {% csrf_token %}
+            <div class="profile-image">
+                {% if user.image %}
+                    <a href="{{ user.image.url }}"><img src="{{ user.image.url }}" alt="Фотография"></a>
+                {% else %}
+                    <img src="{% static 'users/images/no_image.png' %}" alt="Фотография">
+                {% endif %}
+                <div class="profile-image-char">
+                    {{ form.image }}
+                    <div class="forms-error">{{ field.errors }}</div>
+                </div>
+            </div>
+            <div class="profile-info">
+                <h3>Профиль {{ user.username }}</h3>
                 <div class="profile-input">
-                    {% csrf_token %}
                     {% for field in form %}
-                        <div class="profile-char">
-                            {{ field }}
-                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            <div class="forms-error">{{ field.errors }}</div>
-                        </div>
+                        {% if field.name != 'image' %}
+                            <div class="profile-char">
+                                {{ field }}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                <div class="forms-error">{{ field.errors }}</div>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
-                <button type="submit">Обновить</button>
-            </form>
+                <p><a href="{% url 'users:password_change' %}" class="link">Сменить пароль</a></p>
+            </div>
             <div class="forms-error">{{ form.non_field_errors }}</div>
-        </div>
+            <div class="profile-button">
+                <button type="submit">Обновить</button>
+            </div>
+        </form>
     </div>
 {% endblock %}
+
+{#        <div class="profile-image">#}
+{#            {% if user.image %}#}
+{#                <a href="{{ user.image.url }}"><img src="{{ user.image.url }}" alt="Фотография"></a>#}
+{#            {% else %}#}
+{#                <img src="{% static 'users/images/no_image.png' %}" alt="Фотография">#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        <div class="profile-info">#}
+{#            <h3>Профиль {{ user.username }}</h3>#}
+{#            <form method="POST" enctype="multipart/form-data" action="{% url 'users:profile' %}">#}
+{#                <div class="profile-input">#}
+{#                    {% csrf_token %}#}
+{#                    {% for field in form %}#}
+{#                        <div class="profile-char">#}
+{#                            {{ field }}#}
+{#                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>#}
+{#                            <div class="forms-error">{{ field.errors }}</div>#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#                <p><a href="{% url 'users:password_change' %}" class="link">Сменить пароль</a></p>#}
+{#                <button type="submit">Обновить</button>#}
+{#            </form>#}
+{#            <div class="forms-error">{{ form.non_field_errors }}</div>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}
