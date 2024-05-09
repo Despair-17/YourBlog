@@ -1,4 +1,31 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+    <div class="profile-container">
+        <div class="profile-image">
+            {% if user.image %}
+                {{ user.image }}
+            {% else %}
+                <img src="{% static 'users/images/no_image.png' %}" alt="Фотография">
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h3>Профиль {{ user.username }}</h3>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'users:profile' %}">
+                <div class="profile-input">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="profile-char">
+                            {{ field }}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            <div class="forms-error">{{ field.errors }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="submit">Обновить</button>
+            </form>
+            <div class="forms-error">{{ form.non_field_errors }}</div>
+        </div>
+    </div>
 {% endblock %}

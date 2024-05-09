@@ -8,10 +8,10 @@ from django.http import HttpRequest, HttpResponse
 
 from django.urls import reverse_lazy
 
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, UpdateView
 
 from main.utils import DataMixin
-from .form import LoginUserForm, RegisterUserForm
+from .form import LoginUserForm, RegisterUserForm, ProfileUserForm
 from .models import User
 
 
@@ -33,10 +33,12 @@ def register_user_done(request: HttpRequest) -> HttpResponse:
     return render(request, 'users/register_done.html')
 
 
-class ProfileUserView(DataMixin, LoginRequiredMixin, DetailView):
+class ProfileUserView(DataMixin, LoginRequiredMixin, UpdateView):
     template_name = 'users/profile.html'
     title_page = 'Профиль'
     model = get_user_model()
+    form_class = ProfileUserForm
+    success_url = reverse_lazy('users:profile')
 
     def get_object(self, queryset=None) -> User:
         return self.request.user
