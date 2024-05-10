@@ -13,7 +13,7 @@ class LoginUserForm(AuthenticationForm):
         min_length=4,
         max_length=50,
         widget=forms.TextInput(),
-        label='Логин',
+        label=r'Логин / Email',
     )
 
     password = forms.CharField(
