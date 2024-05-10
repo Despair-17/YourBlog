@@ -16,7 +16,7 @@
                     </div>
                 {% endfor %}
                 <div class="forms-links">
-                    <a href="#" class="link">Забыли пароль?</a>
+                    <a href="{% url 'users:password_reset' %}" class="link">Забыли пароль?</a>
                     <a href="{% url 'users:register' %}" class="link">Регистрация</a>
                 </div>
                 <button type="submit">Отправить</button>

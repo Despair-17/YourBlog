@@ -116,6 +116,10 @@ LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'users:login'
 LOGOUT_REDIRECT_URL = 'home'
 
+# email
+# https://docs.djangoproject.com/en/4.2/topics/email/
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
