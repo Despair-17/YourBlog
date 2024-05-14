@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import json
 from pathlib import Path
 
 import environ
@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'taggit',
     'django_ckeditor_5',
     'debug_toolbar',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -109,7 +110,6 @@ AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'users.backends.EmailAuthBackends',
-
 ]
 
 LOGIN_REDIRECT_URL = 'home'
@@ -131,7 +131,8 @@ EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')
 
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL')
 SERVER_EMAIL = env.str('SERVER_EMAIL')
-ADMINS = env.list('ADMINS')
+ADMINS = json.loads(env.str('ADMINS'))
+CONTACT_EMAIL = env.str('CONTACT_EMAIL')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

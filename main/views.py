@@ -1,9 +1,13 @@
 from typing import Any
 
-from django.views.generic import TemplateView
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, FormView
+from django.core.mail import send_mail
 
+from .forms import ContactForm
 from .models import Main, About, FAQ
 from .utils import DataMixin
+from blog.settings import DEFAULT_FROM_EMAIL, CONTACT_EMAIL
 
 
 class HomePageView(DataMixin, TemplateView):
@@ -40,3 +44,21 @@ class FAQPageView(DataMixin, TemplateView):
         faq = FAQ.objects.first()
         context['faq'] = faq
         return context
+
+
+class ContactView(DataMixin, FormView):
+    template_name = 'main/contact.html'
+    title_page = 'Обратная связь'
+    form_class = ContactForm
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        send_mail(
+            subject='Новое сообщение обратной связи',
+            message=f'Имя: {form.cleaned_data["name"]}\n'
+                    f'Email: {form.cleaned_data["email"]}\n'
+                    f'Сообщение: {form.cleaned_data["message"]}',
+            from_email=DEFAULT_FROM_EMAIL,
+            recipient_list=[CONTACT_EMAIL],
+        )
+        return super().form_valid(form)

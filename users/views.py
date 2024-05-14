@@ -11,7 +11,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
 from main.utils import DataMixin
-from .form import LoginUserForm, RegisterUserForm, ProfileUserForm, PasswordChangeUserForm
+from .forms import LoginUserForm, RegisterUserForm, ProfileUserForm, PasswordChangeUserForm
 from .models import User
 
 
