@@ -6,7 +6,7 @@
             <h1>{{ main.title }}</h1>
             {{ main.content|safe }}
             <div class="start-blog-container">
-                <a href="#" class="menu-link">Начни свой блог</a>
+                <a href="{% url 'my_posts' %}" class="menu-link">Начни свой блог</a>
             </div>
         </div>
     </div>

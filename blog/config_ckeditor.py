@@ -1,3 +1,5 @@
+CKEDITOR_5_CUSTOM_CSS = 'css/ckeditor5/admin_dark_mode_fix.css'
+
 customColorPalette = [
     {
         'color': 'hsl(4, 90%, 58%)',

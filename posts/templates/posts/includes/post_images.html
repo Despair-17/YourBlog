@@ -1,0 +1,7 @@
+{% load static %}
+
+{% if post.image %}
+    <a href="{{ post.image.url }}"><img src="{{ post.image.url }}" alt="Изображение" class="post-image"></a>
+{% else %}
+    <img src="{% static 'posts/images/default_image.png' %}" alt="Изображение" class="post-image">
+{% endif %}

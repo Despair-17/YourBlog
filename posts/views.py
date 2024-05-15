@@ -1,12 +1,19 @@
 from typing import Any
 
-from django.views.generic import DetailView, TemplateView, ListView
+from django.http import HttpResponseRedirect
+from django.template.defaultfilters import slugify
+from unidecode import unidecode
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, TemplateView, CreateView
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import RowNumber
-from django.db.models import F, Window, Count, QuerySet
+from django.db.models import F, Window, Count, QuerySet, Case, When, IntegerField
 
 from taggit.models import Tag
 from main.utils import DataMixin
+from .forms import PostCreateForm
 
 from .models import Post, Category
 from .utils import PaginatedListView
@@ -112,3 +119,25 @@ class PostsExtendedSearchView(DataMixin, PaginatedListView):
         context['categories'] = categories
         context['tags'] = self.tags
         return context
+
+
+class MyPostsView(DataMixin, LoginRequiredMixin, CreateView):
+    template_name = 'posts/my_posts.html'
+    title_page = 'Мои посты'
+    form_class = PostCreateForm
+    success_url = reverse_lazy('my_posts')
+
+    def get_queryset(self) -> QuerySet[Post]:
+        return Post.objects.filter(author_id=self.request.user.pk)
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        posts = self.get_queryset()
+
+        context['published'] = [post for post in posts if post.is_published == Post.Status.PUBLISHED]
+        context['draft'] = [post for post in posts if post.is_published == Post.Status.DRAFT]
+        return context
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)

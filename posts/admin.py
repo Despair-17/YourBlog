@@ -23,7 +23,7 @@ class PostAdmin(admin.ModelAdmin):
 
     @admin.display(description='Изображение')
     def post_image(self, post: Post):
-        if post.image.url:
+        if post.image and post.image.url:
             return mark_safe(f'<a href="{post.image.url}" target="_blank">'
                              f'<img src="{post.image.url}" alt="{post.title}" height=50 width=50></a>')
         return 'Нет картинки'

@@ -266,6 +266,7 @@ html, body {
 
 .image-container img {
     width: 100%;
+    max-width: 600px;
     height: auto;
     border-radius: 26px;
 }
@@ -354,6 +355,90 @@ html, body {
     border-radius: 30px;
     margin-top: 22px;
     margin-bottom: 0;
+}
+
+.my-post-form-container form {
+    background-color: var(--main-color);
+    color: var(--font-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.my-post-form-container h3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid silver;
+    letter-spacing: 0.05em;
+    padding-bottom: 4px;
+    margin-top: 0;
+}
+
+.button-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ck-editor-container {
+    max-width: 800px;
+    min-width: 800px;
+    resize: None;
+}
+
+.my-post-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.my-post-field label {
+    margin-bottom: 4px;
+    color: silver;
+}
+
+.my-post-field input {
+    width: 306px;
+    height: 30px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+.my-post-field select {
+    width: 21%;
+    height: 40px;
+    font-size: 16px;
+    padding: 0 5px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+}
+
+.my-post-form-container form .button-submit button {
+    width: 25%;
+    height: 50px;
+    border: 1px solid;
+    background: var(--font-color);
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: 700;
+    outline: none;
+}
+
+.my-post-form-container form .button-submit button:hover {
+    background: silver;
+}
+
+.post-select-section {
+    display: flex;
+}
+
+.post-select-section p {
+    margin-right: 20px;
 }
 
 .pagination {

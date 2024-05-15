@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+
+{% block breadcrumbs %}
+    <div class="items-container">
+        <div class="my-post-form-container">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.media }}
+                <h3>Добавить пост</h3>
+                {% for field in form %}
+                    <div class="my-post-field">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        <div class="forms-error">{{ field.errors }}</div>
+                    </div>
+                {% endfor %}
+                <div class="button-submit">
+                    <button type="submit">Отправить</button>
+                </div>
+            </form>
+        </div>
+        <div class="forms-error">{{ form.non_field_errors }}</div>
+        <div class="post-select-section">
+            <p><a href="#section1" class="link">Перейти к опубликованным постам</a></p>
+            <p><a href="#section2" class="link">Перейти к черновикам</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if published %}
+        <div class="mini-post-info">
+            <h3 id="section1">Опубликованные посты</h3>
+        </div>
+        <div class="mini-post-container">
+            {% for post in published %}
+                {% include 'posts/includes/render_post.html' %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if draft %}
+        <div class="mini-post-info">
+            <h3 id="section2">Черновики</h3>
+        </div>
+        <div class="mini-post-container">
+            {% for post in draft %}
+                {% include 'posts/includes/render_post.html' %}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

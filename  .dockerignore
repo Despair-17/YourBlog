@@ -1,7 +1,6 @@
 __pycache__
 .idea
-db.sqlite3
+*.sqlite3
 /blog/config.py
 media/
 /.env
-/.env.docker
