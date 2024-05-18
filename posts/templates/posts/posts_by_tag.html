@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="mini-post-info">
-        <h3>Тег: {{ tag.name }}</h3>
-    </div>
-    <div class="mini-post-container">
-        {% for post in posts_list %}
-            {% include 'posts/includes/post_mini_render.html' %}
-        {% endfor %}
+    <div class="mini-post-info-container">
+        <div class="post-tag-info-container">
+            <h3>Тег: {{ tag.name }}</h3>
+        </div>
     </div>
 
+    <div class="mini-post-outer">
+        <div class="mini-post-container">
+            {% for post in posts_list %}
+                {% include 'posts/includes/post_mini_render.html' %}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block navigation %}

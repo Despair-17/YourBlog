@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from .forms import ContactForm
 from .models import Main, About, FAQ
 from .utils import DataMixin
-from blog.settings import DEFAULT_FROM_EMAIL, CONTACT_EMAIL
+from blog.settings.base import DEFAULT_FROM_EMAIL, CONTACT_EMAIL
 
 
 class HomePageView(DataMixin, TemplateView):
