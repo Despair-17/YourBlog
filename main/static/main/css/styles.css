@@ -292,7 +292,7 @@ html, body {
     width: 100%;
     max-width: 600px;
     height: auto;
-    border-radius: 26px;
+    border-radius: 12px;
 }
 
 .start-blog-container {
@@ -326,6 +326,21 @@ html, body {
 
 .tag-container a {
     margin: 5px;
+}
+
+.post-tag-info-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.1em;
+    left: -20px;
+}
+
+.post-tag-info-container::before {
+    position: relative;
+    content: '🏷️';
+    left: 4px;
 }
 
 .mini-post-outer {
