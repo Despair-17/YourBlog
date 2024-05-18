@@ -1,0 +1,19 @@
+{% load static %}
+
+<div class="mini-post">
+    <div class="mini-post-image">
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Изображение" class="post-image">
+        {% else %}
+            <img src="{% static 'posts/images/default_image.png' %}" alt="Изображение" class="post-image">
+        {% endif %}
+    </div>
+    <div class="mini-post-text">
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.content|truncatechars:400|safe }}</p>
+    </div>
+    <div class="mini-post-link">
+        <span></span>
+        <p class="mini-post-link"><a href="{{ post.get_absolute_url }}" class="link">Читать полную статью</a></p>
+    </div>
+</div>

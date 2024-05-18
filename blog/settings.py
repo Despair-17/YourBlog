@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'debug_toolbar',
     'captcha',
+    'guardian',
 ]
 
 MIDDLEWARE = [
@@ -110,6 +111,7 @@ AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'users.backends.EmailAuthBackends',
+    'guardian.backends.ObjectPermissionBackend',
 ]
 
 LOGIN_REDIRECT_URL = 'home'

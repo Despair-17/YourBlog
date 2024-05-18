@@ -4,7 +4,7 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 from posts.models import Post
 
 
-class PostCreateForm(forms.ModelForm):
+class MyPostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ('title', 'slug', 'content', 'category', 'tags', 'image', 'is_published')

@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="mini-post-info">
-        <h3>{{ category.name }}</h3>
+    <div class="mini-post-info-container">
+        <div class="mini-post-info">
+            <h3>{{ category.name }}</h3>
+        </div>
     </div>
-    <div class="mini-post-container">
-        {% for post in posts_list %}
-            {% include 'posts/includes/render_post.html' %}
-        {% endfor %}
+    <div class="mini-post-outer">
+        <div class="mini-post-container">
+            {% for post in posts_list %}
+                {% include 'posts/includes/post_mini_render.html' %}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
 

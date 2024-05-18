@@ -1,20 +1,18 @@
 from typing import Any
 
-from django.http import HttpResponseRedirect
-from django.template.defaultfilters import slugify
-from unidecode import unidecode
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, TemplateView, CreateView
+from django.views.generic import DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import RowNumber
-from django.db.models import F, Window, Count, QuerySet, Case, When, IntegerField
+from django.db.models import F, Window, Count, QuerySet
+from guardian.shortcuts import get_objects_for_user, get_perms
 
 from taggit.models import Tag
 from main.utils import DataMixin
-from .forms import PostCreateForm
+from guardian.mixins import PermissionListMixin
 
+from .forms import MyPostForm
 from .models import Post, Category
 from .utils import PaginatedListView
 
@@ -39,13 +37,6 @@ class AllCategoriesView(DataMixin, TemplateView):
 
         context['posts_by_category'] = posts_by_category
         return context
-
-
-class PostView(DataMixin, DetailView):
-    template_name = 'posts/post.html'
-    model = Post
-    slug_url_kwarg = 'post_slug'
-    context_object_name = 'post'
 
 
 class PostsByCategoryView(DataMixin, PaginatedListView):
@@ -90,7 +81,7 @@ class PostsSearchView(DataMixin, PaginatedListView):
 
 
 class PostsExtendedSearchView(DataMixin, PaginatedListView):
-    template_name = 'posts/extended_search.html'
+    template_name = 'posts/search_extended.html'
     context_object_name = 'posts_list'
     title_page = 'Поиск'
     tags = None
@@ -121,10 +112,25 @@ class PostsExtendedSearchView(DataMixin, PaginatedListView):
         return context
 
 
-class MyPostsView(DataMixin, LoginRequiredMixin, CreateView):
-    template_name = 'posts/my_posts.html'
+class PostDetailView(DataMixin, DetailView):
+    template_name = 'posts/post_detail.html'
+    model = Post
+    slug_url_kwarg = 'post_slug'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.get_object()
+        user = self.request.user
+        permitted_items = get_perms(user, post)
+        context['permitted_items'] = permitted_items
+        return context
+
+
+class MyPostsCreateView(DataMixin, LoginRequiredMixin, CreateView):
+    template_name = 'posts/posts_user.html'
     title_page = 'Мои посты'
-    form_class = PostCreateForm
+    form_class = MyPostForm
     success_url = reverse_lazy('my_posts')
 
     def get_queryset(self) -> QuerySet[Post]:
@@ -141,3 +147,24 @@ class MyPostsView(DataMixin, LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+
+class MyPostsUpdateView(DataMixin, LoginRequiredMixin, PermissionListMixin, UpdateView):
+    template_name = 'posts/post_update.html'
+    title_page = 'Обновление поста'
+    form_class = MyPostForm
+    slug_url_kwarg = 'post_slug'
+    model = Post
+    permission_required = 'change_post'
+
+    def get_success_url(self):
+        return reverse_lazy('post', kwargs={self.slug_url_kwarg: self.kwargs[self.slug_url_kwarg]})
+
+
+class MyPostsDeleteView(DataMixin, LoginRequiredMixin, PermissionListMixin, DeleteView):
+    template_name = 'posts/post_delete.html'
+    title_page = 'Удаление поста'
+    model = Post
+    slug_url_kwarg = 'post_slug'
+    permission_required = 'delete_post'
+    success_url = reverse_lazy('my_posts')

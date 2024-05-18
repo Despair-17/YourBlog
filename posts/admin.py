@@ -5,9 +5,11 @@ from django.utils.safestring import mark_safe
 from .models import Post
 from .models import Category
 
+from guardian.admin import GuardedModelAdmin
+
 
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(GuardedModelAdmin):
     list_display = ('title', 'post_image', 'author', 'category', 'slug', 'is_published', 'time_create',
                     'time_update')
     list_display_links = ('title',)

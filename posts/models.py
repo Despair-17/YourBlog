@@ -6,6 +6,7 @@ from django.urls import reverse
 from taggit.managers import TaggableManager
 
 from django_ckeditor_5.fields import CKEditor5Field
+from guardian.shortcuts import assign_perm
 
 
 class PublishedManager(models.Manager):
@@ -89,6 +90,11 @@ class Post(models.Model):
 
     def get_absolute_url(self) -> str:
         return reverse('post', kwargs={'post_slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        assign_perm('change_post', self.author, self)
+        assign_perm('delete_post', self.author, self)
 
 
 class Category(models.Model):

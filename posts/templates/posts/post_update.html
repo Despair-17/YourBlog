@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %}
+    <div class="items-container">
+        {% include 'posts/includes/post_form_cu.html' %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% include 'posts/includes/post_render.html' %}
+{% endblock %}

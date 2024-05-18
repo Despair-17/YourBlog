@@ -1,0 +1,18 @@
+<div class="my-post-form-container">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media }}
+        <h3>Добавить пост</h3>
+        {% for field in form %}
+            <div class="my-post-field">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                <div class="forms-error">{{ field.errors }}</div>
+            </div>
+        {% endfor %}
+        <div class="button-submit">
+            <button type="submit">Отправить</button>
+        </div>
+    </form>
+</div>
+<div class="forms-error">{{ form.non_field_errors }}</div>

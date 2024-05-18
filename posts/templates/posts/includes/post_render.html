@@ -1,0 +1,16 @@
+<div class="post-container">
+    <div class="image-container">
+        {% include 'posts/includes/post_images.html' %}
+    </div>
+    <div class="text-container">
+        <h1>{{ post.title }}</h1>
+        <div class="post-data-container">
+            <p>Категория:
+                <a href="{{ post.category.get_absolute_url }}" class="link">{{ post.category.name }}</a>
+            </p>
+            <p>Автор: <a href="#" class="link">{{ post.author }}</a></p>
+            <p>Дата: {{ post.time_create|date:"D d M Y" }}</p>
+        </div>
+        {{ post.content|safe }}
+    </div>
+</div>

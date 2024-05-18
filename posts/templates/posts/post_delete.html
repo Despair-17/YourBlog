@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="post-container">
+        <div class="text-container">
+            <h2>Удаление записи</h2>
+            <form method="post">{% csrf_token %}
+                <p>Вы уверены, что хотите безвозвратно удалить запись "{{ object }}"?</p>
+                {{ form }}
+                <div class="button-submit">
+                    <button type="submit" class="button-submit-common">Подтвердить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

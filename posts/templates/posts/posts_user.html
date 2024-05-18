@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block breadcrumbs %}
+    <div class="items-container">
+        {% include 'posts/includes/post_form_cu.html' %}
+        <div class="post-select-section">
+            <p><a href="#section1" class="link">Перейти к опубликованным постам</a></p>
+            <p><a href="#section2" class="link">Перейти к черновикам</a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if published %}
+        <div class="mini-post-info-container">
+            <div class="mini-post-info">
+                <h3 id="section1">Опубликованные посты</h3>
+            </div>
+        </div>
+        <div class="mini-post-outer">
+            <div class="mini-post-container">
+                {% for post in published %}
+                    {% include 'posts/includes/post_mini_render.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if draft %}
+        <div class="mini-post-info-container">
+            <div class="mini-post-info">
+                <h3 id="section2">Черновики</h3>
+            </div>
+        </div>
+        <div class="mini-post-outer">
+            <div class="mini-post-container">
+                {% for post in draft %}
+                    {% include 'posts/includes/post_mini_render.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
