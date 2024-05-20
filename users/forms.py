@@ -50,9 +50,6 @@ class ProfileUserForm(forms.ModelForm):
     email = forms.EmailField(
         required=True,
         label='Email',
-        validators=(
-            EmailExistValidator(),
-        )
     )
 
     this_year = datetime.now().year
@@ -72,6 +69,17 @@ class ProfileUserForm(forms.ModelForm):
         widgets = {
             'image': forms.ClearableFileInput(attrs={'class': 'profile-image-select'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.get('instance', None)
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_email(self) -> str:
+        email = self.cleaned_data['email']
+        email_exist_validator = EmailExistValidator()
+        email_exist_validator(email, self.user)
+        return email
 
 
 class PasswordChangeUserForm(PasswordChangeForm):
