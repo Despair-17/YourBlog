@@ -49,15 +49,21 @@ INSTALLED_APPS = [
 
     'django_extensions',
 
-    'users.apps.UsersConfig',
     'main.apps.MainConfig',
     'posts.apps.PostsConfig',
+    'users.apps.UsersConfig',
 
-    'taggit',
-    'django_ckeditor_5',
     'captcha',
+    'django_ckeditor_5',
     'guardian',
+    'taggit',
 ]
+
+MIGRATION_MODULES = {
+    'taggit': 'external_migrations.migrations.taggit',
+    'captcha': 'external_migrations.migrations.captcha',
+    'guardian': 'external_migrations.migrations.guardian',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

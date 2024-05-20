@@ -1,7 +1,7 @@
 import os
 from django.contrib.auth import get_user_model
 from posts.models import Post, Category
-from blog.settings import BASE_DIR
+from blog.settings.prod import BASE_DIR
 
 content = '''Это тестовый пост для проверки пагинации постов
 Это тестовый пост для проверки пагинации постов

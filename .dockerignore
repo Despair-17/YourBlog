@@ -1,0 +1,14 @@
+__pycache__
+.idea
+.env
+.env.docker
+.env.template
+.git
+.gitignore
+.dockerignore
+static/*
+media/*
+db.sqlite3
+blog/config.py
+Dockerfile
+docker-compose.yml

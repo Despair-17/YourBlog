@@ -3,11 +3,12 @@ FROM python:3.11-slim
 RUN mkdir app
 WORKDIR app
 
-ADD requirements.txt /app/
-RUN pip install -r requirements.txt
+COPY requirements /app/requirements
+RUN pip install -r requirements/prod.txt
 
-ADD . /app/
-ADD .env.docker /app/.env
+COPY . /app/
 
-CMD python manage.py collectstatic \
-    && gunicorn blog.wsgi:application -b 0.0.0.0:8000
+CMD python manage.py makemigrations \
+    && python manage.py migrate \
+    && python scripts/create_superuser.py \
+    && python manage.py runserver 0.0.0.0:8000 --settings=blog.settings.prod
