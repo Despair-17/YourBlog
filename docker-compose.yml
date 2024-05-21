@@ -12,6 +12,13 @@ services:
       - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"
+    volumes:
+      - ./pg_healthcheck.sh:/usr/local/bin/pg_healthcheck.sh
+    healthcheck:
+      test: [ "CMD-SHELL", "bash /usr/local/bin/pg_healthcheck.sh" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   blog:
     build:
@@ -22,7 +29,10 @@ services:
     env_file:
       - .env
     depends_on:
-      - postgres-db
+      postgres-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - static_volume:/app/static
       - media_volume:/app/media
@@ -38,6 +48,19 @@ services:
       - "80:80"
     depends_on:
       - blog
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_healthcheck.sh:/usr/local/bin/redis_healthcheck.sh
+    healthcheck:
+      test: [ "CMD-SHELL", "/usr/local/bin/redis_healthcheck.sh" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   static_volume:
