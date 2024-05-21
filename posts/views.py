@@ -6,15 +6,17 @@ from django.views.generic import DetailView, TemplateView, CreateView, UpdateVie
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import RowNumber
 from django.db.models import F, Window, Count, QuerySet
-from guardian.shortcuts import get_objects_for_user, get_perms
+from django.core.cache import cache
 
+from guardian.shortcuts import get_perms
+from guardian.mixins import PermissionListMixin
 from taggit.models import Tag
 from main.utils import DataMixin
-from guardian.mixins import PermissionListMixin
 
 from .forms import MyPostForm
 from .models import Post, Category
 from .utils import PaginatedListView
+from blog.settings.base import CACHE_TTL_FCH
 
 
 class AllCategoriesView(DataMixin, TemplateView):
@@ -23,19 +25,27 @@ class AllCategoriesView(DataMixin, TemplateView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        window = Window(
-            expression=RowNumber(),
-            partition_by=[F('category__name')],
-            order_by=[F('time_update').desc()]
-        )
-        posts = Post.published.annotate(row_number=window).order_by('category__name')
-        posts = posts.filter(row_number__lte=4).select_related('category')
 
-        posts_by_category = {}
-        for post in posts:
-            posts_by_category.setdefault(post.category, []).append(post)
+        cache_key = 'all_categories'
+        posts_by_category = cache.get(cache_key)
+
+        if not posts_by_category:
+            window = Window(
+                expression=RowNumber(),
+                partition_by=[F('category__name')],
+                order_by=[F('time_update').desc()]
+            )
+            posts = Post.published.annotate(row_number=window).order_by('category__name')
+            posts = posts.filter(row_number__lte=4).select_related('category')
+
+            posts_by_category = {}
+            for post in posts:
+                posts_by_category.setdefault(post.category, []).append(post)
+
+            cache.set(cache_key, posts_by_category, CACHE_TTL_FCH)
 
         context['posts_by_category'] = posts_by_category
+
         return context
 
 
@@ -45,9 +55,21 @@ class PostsByCategoryView(DataMixin, PaginatedListView):
     category = None
 
     def get_queryset(self) -> QuerySet[Post]:
-        self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
-        queryset = Post.published.filter(category=self.category)
-        return queryset
+        cache_key_cats = f'posts_by_category_cat_{self.kwargs["category_slug"]}'
+        cache_key_posts = f'posts_by_category_posts_{self.kwargs["category_slug"]}'
+
+        self.category = cache.get(cache_key_cats)
+        posts = cache.get(cache_key_posts)
+
+        if not self.category:
+            self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
+            cache.set(cache_key_cats, self.category, CACHE_TTL_FCH)
+
+        if not posts:
+            posts = Post.published.filter(category=self.category)
+            cache.set(cache_key_posts, posts, CACHE_TTL_FCH)
+
+        return posts
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -60,9 +82,21 @@ class PostsByTagsView(DataMixin, PaginatedListView):
     tag = None
 
     def get_queryset(self) -> QuerySet[Post]:
-        self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
-        queryset = Post.published.filter(tags=self.tag).select_related('author', 'category')
-        return queryset
+        cache_key_tag = f'posts_by_tags_tag_{self.kwargs["tag_slug"]}'
+        cache_key_posts = f'posts_by_tags_posts_{self.kwargs["tag_slug"]}'
+
+        self.tag = cache.get(cache_key_tag)
+        posts = cache.get(cache_key_posts)
+
+        if not self.tag:
+            self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+            cache.set(cache_key_tag, self.tag, CACHE_TTL_FCH)
+
+        if not posts:
+            posts = Post.published.filter(tags=self.tag).select_related('author', 'category')
+            cache.set(cache_key_posts, posts, CACHE_TTL_FCH)
+
+        return posts
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -76,8 +110,15 @@ class PostsSearchView(DataMixin, PaginatedListView):
 
     def get_queryset(self) -> QuerySet[Post]:
         search_query = self.request.GET.get('search_query')
-        queryset = Post.published.filter(title__icontains=search_query)
-        return queryset
+        cache_key = f'posts_search_{search_query}'
+
+        posts = cache.get(cache_key)
+
+        if not posts:
+            posts = Post.published.filter(title__icontains=search_query)
+            cache.set(cache_key, posts, CACHE_TTL_FCH)
+
+        return posts
 
 
 class PostsExtendedSearchView(DataMixin, PaginatedListView):
@@ -90,23 +131,43 @@ class PostsExtendedSearchView(DataMixin, PaginatedListView):
         category = self.request.GET.get('category')
         tags = self.request.GET.getlist('tags')
 
+        tags_str = ','.join(tags)
+        cache_key_posts = f'posts_extended_search_posts_{category}_{tags_str}'
+        cache_key_tags = f'posts_extended_search_tags_{category}_{tags_str}'
+
+        posts = cache.get(cache_key_posts)
+        self.tags = cache.get(cache_key_tags)
+
         if not category:
             return []
 
-        queryset = Post.objects.filter(category=category)
+        if not posts:
+            posts = Post.published.filter(category=category)
 
-        if tags:
-            queryset = (Post.published
-                        .filter(tags__id__in=tags)
-                        .annotate(num_tags=Count('tags__id'))
-                        .filter(num_tags=len(tags)))
+            if tags:
+                posts = (Post.published
+                         .filter(tags__id__in=tags)
+                         .annotate(num_tags=Count('tags__id'))
+                         .filter(num_tags=len(tags)))
 
-        self.tags = Tag.objects.filter(taggit_taggeditem_items__object_id__in=queryset).distinct()
-        return queryset
+            cache.set(cache_key_posts, posts, CACHE_TTL_FCH)
+
+            if not self.tags:
+                self.tags = Tag.objects.filter(taggit_taggeditem_items__object_id__in=posts).distinct()
+                cache.set(cache_key_tags, self.tags, CACHE_TTL_FCH)
+
+        return posts
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        categories = Category.objects.all()
+        cache_key = f'posts_extended_search_category'
+
+        categories = cache.get(cache_key)
+
+        if not categories:
+            categories = Category.objects.all()
+            cache.set(cache_key, categories, CACHE_TTL_FCH)
+
         context['categories'] = categories
         context['tags'] = self.tags
         return context
@@ -118,12 +179,36 @@ class PostDetailView(DataMixin, DetailView):
     slug_url_kwarg = 'post_slug'
     context_object_name = 'post'
 
+    def get_object(self, queryset=None):
+        cache_key = f'post_detail_{self.kwargs[self.slug_url_kwarg]}'
+
+        post_obj = cache.get(cache_key)
+
+        if not post_obj:
+            posts = self.model.published.filter(slug=self.kwargs[self.slug_url_kwarg])
+            posts = posts.select_related('category', 'author').prefetch_related('tags')
+
+            post_obj = get_object_or_404(posts, slug=self.kwargs[self.slug_url_kwarg])
+
+            cache.set(cache_key, post_obj, CACHE_TTL_FCH)
+
+        return post_obj
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        post = self.get_object()
-        user = self.request.user
-        permitted_items = get_perms(user, post)
+
+        cache_key = f'post_detail_{self.kwargs[self.slug_url_kwarg]}_{self.request.user.pk}'
+
+        permitted_items = cache.get(cache_key)
+
+        if not permitted_items:
+            post = self.object
+            user = self.request.user
+            permitted_items = get_perms(user, post)
+            cache.set(cache_key, permitted_items, CACHE_TTL_FCH)
+
         context['permitted_items'] = permitted_items
+
         return context
 
 
@@ -134,14 +219,26 @@ class MyPostsCreateView(DataMixin, LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('my_posts')
 
     def get_queryset(self) -> QuerySet[Post]:
-        return Post.objects.filter(author_id=self.request.user.pk)
+        posts = Post.objects.filter(author_id=self.request.user.pk)
+        return posts
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        posts = self.get_queryset()
+        cache_key = f'my_posts_create_{self.request.user.pk}'
 
-        context['published'] = [post for post in posts if post.is_published == Post.Status.PUBLISHED]
-        context['draft'] = [post for post in posts if post.is_published == Post.Status.DRAFT]
+        post_list = cache.get(cache_key)
+
+        if not post_list:
+            posts = self.get_queryset()
+            posts_published = [post for post in posts if post.is_published == Post.Status.PUBLISHED]
+            posts_draft = [post for post in posts if post.is_published == Post.Status.DRAFT]
+            cache.set(cache_key, [posts_published, posts_draft], CACHE_TTL_FCH)
+        else:
+            posts_published, posts_draft = post_list
+
+        context['published'] = posts_published
+        context['draft'] = posts_draft
+
         return context
 
     def form_valid(self, form):
@@ -156,6 +253,21 @@ class MyPostsUpdateView(DataMixin, LoginRequiredMixin, PermissionListMixin, Upda
     slug_url_kwarg = 'post_slug'
     model = Post
     permission_required = 'change_post'
+
+    def get_object(self, queryset=None):
+        cache_key = f'my_posts_update_{self.kwargs[self.slug_url_kwarg]}_{self.request.user.pk}'
+
+        post_obj = cache.get(cache_key)
+
+        if not post_obj:
+            posts = self.model.published.filter(slug=self.kwargs[self.slug_url_kwarg])
+            posts = posts.select_related('category', 'author')
+
+            post_obj = get_object_or_404(posts, slug=self.kwargs[self.slug_url_kwarg])
+
+            cache.set(cache_key, post_obj, CACHE_TTL_FCH)
+
+        return post_obj
 
     def get_success_url(self):
         return reverse_lazy('post', kwargs={self.slug_url_kwarg: self.kwargs[self.slug_url_kwarg]})

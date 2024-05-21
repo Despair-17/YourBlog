@@ -1,4 +1,5 @@
 {% load static %}
+{% load cache %}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -13,14 +14,17 @@
 <body>
 
 <header class="header">
-    <div class="header-sides">
-        <a href="{% url 'home' %}" class="">
-            <img src="{% static 'main/images/logo.png' %}" alt="YouBlog" class="header-logo">
-        </a>
-        {% for m in menu %}
-            <a href="{% url m.url_name %}" class="menu-link">{{ m.title }}</a>
-        {% endfor %}
-    </div>
+    {% cache cache_ttl_nfch header %}
+        <div class="header-sides">
+            <a href="{% url 'home' %}" class="">
+                <img src="{% static 'main/images/logo.png' %}" alt="YouBlog" class="header-logo">
+            </a>
+            {% for m in menu %}
+                <a href="{% url m.url_name %}" class="menu-link">{{ m.title }}</a>
+            {% endfor %}
+        </div>
+    {% endcache %}
+
     <div class="header-sides">
         <div class="header-search">
             <form class="" action="{% url 'search' %}" method="GET">
@@ -30,6 +34,7 @@
             </form>
             <a href="{% url 'extended_search' %}" class="menu-link header-search-extended">Расширенный поиск</a>
         </div>
+
         <div class="header-user">
             {% if user.is_authenticated %}
                 <div class="header-dropdown">
@@ -67,18 +72,20 @@
 </main>
 
 <footer class="footer">
-    <div class="footer-sides">
+    {% cache cache_ttl_nfch footer %}
+        <div class="footer-sides">
         <span>&copy; 2024 Частичное или полное копирование информации с данного сайта для распространения
             на других ресурсах, в том числе и бумажных, строго запрещено.</span>
-    </div>
-    <div class="footer-sides">
-        <a href="{% url 'contact' %}" class="menu-link">Обратная связь</a>
-        <div class="">
-            <a href="#"><img src="{% static 'main/images/vk.png' %}" alt="VK"></a>
-            <a href="#"><img src="{% static 'main/images/instagram.png' %}" alt="Instagram"></a>
-            <a href="#"><img src="{% static 'main/images/telegram.png' %}" alt="Telegram"></a>
         </div>
-    </div>
+        <div class="footer-sides">
+            <a href="{% url 'contact' %}" class="menu-link">Обратная связь</a>
+            <div class="">
+                <a href="#"><img src="{% static 'main/images/vk.png' %}" alt="VK"></a>
+                <a href="#"><img src="{% static 'main/images/instagram.png' %}" alt="Instagram"></a>
+                <a href="#"><img src="{% static 'main/images/telegram.png' %}" alt="Telegram"></a>
+            </div>
+        </div>
+    {% endcache %}
 </footer>
 
 <script src="{% static 'main/js/dropmenu.js' %}"></script>

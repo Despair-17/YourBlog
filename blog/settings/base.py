@@ -89,6 +89,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'main.context_processors.get_menu',
+                'main.context_processors.get_cache_ttl',
             ],
         },
     },
@@ -134,16 +135,21 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
-    # {
-    # #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    # # },
-    # # {
-    # #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    # # },
-    # # {
-    # #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    # },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
+
+# Cache lifetime
+
+CACHE_TTL_FCH = 10
+CACHE_TTL_NFCH = 10  # 86400
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

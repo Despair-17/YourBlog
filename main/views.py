@@ -3,11 +3,12 @@ from typing import Any
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
 from django.core.mail import send_mail
+from django.core.cache import cache
 
 from .forms import ContactForm
 from .models import Main, About, FAQ
 from .utils import DataMixin
-from blog.settings.base import DEFAULT_FROM_EMAIL, CONTACT_EMAIL
+from blog.settings.base import DEFAULT_FROM_EMAIL, CONTACT_EMAIL, CACHE_TTL_FCH
 
 
 class HomePageView(DataMixin, TemplateView):
@@ -17,7 +18,14 @@ class HomePageView(DataMixin, TemplateView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        main = Main.objects.first()
+
+        cache_key = 'main_obj'
+        main = cache.get(cache_key)
+
+        if not main:
+            main = Main.objects.first()
+            cache.set(cache_key, main, CACHE_TTL_FCH)
+
         context['main'] = main
         return context
 
@@ -29,7 +37,14 @@ class AboutPageView(DataMixin, TemplateView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        about = About.objects.first()
+
+        cache_key = 'about_obj'
+        about = cache.get(cache_key)
+
+        if not about:
+            about = About.objects.first()
+            cache.set(cache_key, about, CACHE_TTL_FCH)
+
         context['about'] = about
         return context
 
@@ -41,7 +56,14 @@ class FAQPageView(DataMixin, TemplateView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        faq = FAQ.objects.first()
+
+        cache_key = 'faq'
+        faq = cache.get(cache_key)
+
+        if not faq:
+            faq = FAQ.objects.first()
+            cache.set(cache_key, faq, CACHE_TTL_FCH)
+
         context['faq'] = faq
         return context
 

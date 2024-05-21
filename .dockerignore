@@ -9,6 +9,7 @@ __pycache__
 static/*
 media/*
 db.sqlite3
+/db.json
 blog/config.py
 Dockerfile
 docker-compose.yml
