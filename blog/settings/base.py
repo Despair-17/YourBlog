@@ -148,8 +148,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Cache lifetime
 
-CACHE_TTL_FCH = 10
-CACHE_TTL_NFCH = 10  # 86400
+CACHE_TTL_FCH = 60
+CACHE_TTL_NFCH = 60  # 86400
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
