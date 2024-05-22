@@ -15,10 +15,10 @@ services:
     volumes:
       - ./pg_healthcheck.sh:/usr/local/bin/pg_healthcheck.sh
     healthcheck:
-      test: [ "CMD-SHELL", "bash /usr/local/bin/pg_healthcheck.sh" ]
+      test: [ "CMD-SHELL", "/usr/local/bin/pg_healthcheck.sh" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
 
   blog:
     build:
@@ -36,6 +36,14 @@ services:
     volumes:
       - static_volume:/app/static
       - media_volume:/app/media
+    restart: on-failure
+    healthcheck:
+      test: curl -f http://localhost:8000/api/v1/health/ || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
 
   nginx:
     image: nginx:latest
@@ -60,7 +68,7 @@ services:
       test: [ "CMD-SHELL", "/usr/local/bin/redis_healthcheck.sh" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
 
 volumes:
   static_volume:

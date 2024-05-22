@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.http import HttpRequest, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
 from django.core.mail import send_mail
@@ -84,3 +85,7 @@ class ContactView(DataMixin, FormView):
             recipient_list=[CONTACT_EMAIL],
         )
         return super().form_valid(form)
+
+
+def health(request: HttpRequest):
+    return JsonResponse({'status': 'ok'})
