@@ -20,6 +20,6 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": env.str('REDIS_LOCATION'),
+        "LOCATION": env.str('REDIS_CACHE_URL'),
     }
 }

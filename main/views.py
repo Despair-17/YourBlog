@@ -88,4 +88,4 @@ class ContactView(DataMixin, FormView):
 
 
 def health(request: HttpRequest):
-    return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'OK'})

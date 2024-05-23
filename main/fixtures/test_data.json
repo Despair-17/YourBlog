@@ -1,0 +1,26 @@
+[
+  {
+    "model": "main.main",
+    "pk": 1,
+    "fields": {
+      "title": "Главная страница",
+      "content": "Контент главной страницы"
+    }
+  },
+  {
+    "model": "main.about",
+    "pk": 1,
+    "fields": {
+      "title": "О сайте",
+      "content": "Контент страницы о сайте"
+    }
+  },
+  {
+    "model": "main.faq",
+    "pk": 1,
+    "fields": {
+      "title": "FAQs",
+      "content": "Контент FAQs страницы"
+    }
+  }
+]
