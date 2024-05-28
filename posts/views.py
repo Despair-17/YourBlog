@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
@@ -109,13 +110,15 @@ class PostsSearchView(DataMixin, PaginatedListView):
     title_page = 'Результаты поиска'
 
     def get_queryset(self) -> QuerySet[Post]:
-        search_query = self.request.GET.get('search_query')
-        cache_key = f'posts_search_{search_query}'
+        search_query = self.request.GET.get('search_query', '')
+
+        cache_search_query = '_'.join(search_query.split())
+        cache_key = f'posts_search_{cache_search_query}'
 
         posts = cache.get(cache_key)
 
         if not posts:
-            posts = Post.published.filter(title__icontains=search_query)
+            posts = Post.published.filter(title__icontains=search_query).order_by('-time_update')
             cache.set(cache_key, posts, CACHE_TTL_FCH)
 
         return posts
@@ -150,6 +153,7 @@ class PostsExtendedSearchView(DataMixin, PaginatedListView):
                          .annotate(num_tags=Count('tags__id'))
                          .filter(num_tags=len(tags)))
 
+            posts = posts.order_by('-time_update')
             cache.set(cache_key_posts, posts, CACHE_TTL_FCH)
 
             if not self.tags:
@@ -185,12 +189,15 @@ class PostDetailView(DataMixin, DetailView):
         post_obj = cache.get(cache_key)
 
         if not post_obj:
-            posts = self.model.published.filter(slug=self.kwargs[self.slug_url_kwarg])
+            posts = self.model.objects.filter(slug=self.kwargs[self.slug_url_kwarg])
             posts = posts.select_related('category', 'author').prefetch_related('tags')
 
             post_obj = get_object_or_404(posts, slug=self.kwargs[self.slug_url_kwarg])
 
             cache.set(cache_key, post_obj, CACHE_TTL_FCH)
+
+        if not post_obj.is_published and ('change_post' not in get_perms(self.request.user, post_obj)):
+            raise Http404
 
         return post_obj
 
@@ -260,7 +267,7 @@ class MyPostsUpdateView(DataMixin, LoginRequiredMixin, PermissionListMixin, Upda
         post_obj = cache.get(cache_key)
 
         if not post_obj:
-            posts = self.model.published.filter(slug=self.kwargs[self.slug_url_kwarg])
+            posts = self.model.objects.filter(slug=self.kwargs[self.slug_url_kwarg])
             posts = posts.select_related('category', 'author')
 
             post_obj = get_object_or_404(posts, slug=self.kwargs[self.slug_url_kwarg])

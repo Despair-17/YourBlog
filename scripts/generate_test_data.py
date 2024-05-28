@@ -16,7 +16,7 @@ def generate_test_data(count: int) -> None:
     запускать через python manage.py runscript generate_test_data"""
     user = get_user_model().objects.get(username='root')
 
-    category = Category.objects.get(name='Тест')
+    category = Category.objects.get(name='Test')
 
     for i in range(1, count + 1):
         post = Post.objects.create(
@@ -33,4 +33,4 @@ def generate_test_data(count: int) -> None:
 
 
 def run():
-    generate_test_data(200)
+    generate_test_data(50)

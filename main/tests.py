@@ -7,7 +7,7 @@ from captcha.models import CaptchaStore
 
 
 class MainAppTest(TestCase):
-    fixtures = ['test_data.json']
+    fixtures = ['test_data_main.json']
 
     def test_home_page_view(self):
         path = reverse('home')
@@ -145,6 +145,7 @@ class MainAppTest(TestCase):
     def test_health_view(self):
         path = reverse('health')
         response = self.client.get(path)
+
         self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertJSONEqual(response.content, {'status': 'OK'})
