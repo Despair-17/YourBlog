@@ -4,47 +4,91 @@ from django.test import TestCase
 from django.urls import reverse
 
 from captcha.models import CaptchaStore
+from .models import Main, About, FAQ
 
 
-class MainAppTest(TestCase):
-    fixtures = ['test_data_main.json']
+class TestHomePageView(TestCase):
 
-    def test_home_page_view(self):
-        path = reverse('home')
-        response = self.client.get(path)
+    def setUp(self):
+        self.main = Main.objects.create(
+            title='Test main title',
+            content='Test main content',
+        )
+        self.path = reverse('home')
+
+    def test_view_render_correct_template(self):
+        response = self.client.get(self.path)
 
         self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertEqual(response['Content-Type'], 'text/html; charset=utf-8')
         self.assertTemplateUsed(response, 'main/index.html')
-        self.assertContains(response, 'Главная страница')
-        self.assertContains(response, 'Контент главной страницы')
-        self.assertIn('main', response.context)
 
-    def test_about_page_view(self):
-        path = reverse('about')
-        response = self.client.get(path)
+    def test_view_context(self):
+        response = self.client.get(self.path)
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
+        self.assertIn('main', response.context)
+        self.assertContains(response, self.main.title)
+        self.assertContains(response, self.main.content)
+
+
+class TestAboutPageView(TestCase):
+
+    def setUp(self):
+        self.about = About.objects.create(
+            title='Test about title',
+            content='Test about content',
+        )
+        self.path = reverse('about')
+
+    def test_view_render_correct_template(self):
+        response = self.client.get(self.path)
 
         self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertEqual(response['Content-Type'], 'text/html; charset=utf-8')
         self.assertTemplateUsed(response, 'main/about.html')
-        self.assertContains(response, 'О сайте')
-        self.assertContains(response, 'Контент страницы о сайте')
-        self.assertIn('about', response.context)
 
-    def test_faq_page_view(self):
-        path = reverse('faq')
-        response = self.client.get(path)
+    def test_view_context(self):
+        response = self.client.get(self.path)
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
+        self.assertIn('about', response.context)
+        self.assertContains(response, self.about.title)
+        self.assertContains(response, self.about.content)
+
+
+class TestFAQPageView(TestCase):
+
+    def setUp(self):
+        self.faq = FAQ.objects.create(
+            title='Test faq title',
+            content='Test faq content',
+        )
+        self.path = reverse('faq')
+
+    def test_view_render_correct_template(self):
+        response = self.client.get(self.path)
 
         self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertEqual(response['Content-Type'], 'text/html; charset=utf-8')
         self.assertTemplateUsed(response, 'main/faq.html')
-        self.assertContains(response, 'FAQs')
-        self.assertContains(response, 'Контент FAQs страницы')
-        self.assertIn('faq', response.context)
 
-    def test_contact_get_view(self):
-        path = reverse('contact')
-        response = self.client.get(path)
+    def test_view_context(self):
+        response = self.client.get(self.path)
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
+        self.assertIn('faq', response.context)
+        self.assertContains(response, self.faq.title)
+        self.assertContains(response, self.faq.content)
+
+
+class TestContactView(TestCase):
+
+    def setUp(self):
+        self.path = reverse('contact')
+
+    def test_view_render_correct_template(self):
+        response = self.client.get(self.path)
 
         self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertEqual(response['Content-Type'], 'text/html; charset=utf-8')
@@ -60,8 +104,6 @@ class MainAppTest(TestCase):
         self.assertIn('<button type="submit"', content)
 
     def test_contact_form_valid(self):
-        path = reverse('contact')
-
         captcha_key = CaptchaStore.generate_key()
         captcha_value = CaptchaStore.objects.get(hashkey=captcha_key).response
         form_data = {
@@ -72,12 +114,10 @@ class MainAppTest(TestCase):
             'captcha_1': captcha_value,
         }
 
-        response = self.client.post(path, data=form_data)
+        response = self.client.post(self.path, data=form_data)
         self.assertEquals(response.status_code, HTTPStatus.FOUND)
 
     def test_contact_form_invalid(self):
-        path = reverse('contact')
-
         captcha_key = CaptchaStore.generate_key()
 
         form_data = {
@@ -88,7 +128,8 @@ class MainAppTest(TestCase):
             'captcha_1': '1234',
         }
 
-        response = self.client.post(path, data=form_data)
+        response = self.client.post(self.path, data=form_data)
+
         self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertFormError(
             response, 'form',
@@ -119,8 +160,9 @@ class MainAppTest(TestCase):
             'captcha_1': '',
         }
 
-        response = self.client.post(path, data=form_data)
+        response = self.client.post(self.path, data=form_data)
 
+        self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertFormError(
             response, 'form',
             'name',
@@ -141,6 +183,9 @@ class MainAppTest(TestCase):
             'captcha',
             'Это поле обязательно для заполнения.',
         )
+
+
+class TestMainApp(TestCase):
 
     def test_health_view(self):
         path = reverse('health')

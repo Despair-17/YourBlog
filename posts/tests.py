@@ -44,6 +44,7 @@ class TestAllCategoriesView(TestCase):
     def test_view_context(self):
         response = self.client.get(self.path)
 
+        self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertContains(response, 'Все категории')
         self.assertContains(response, 'Test 1')
         self.assertContains(response, 'Test 2')
@@ -56,6 +57,8 @@ class TestAllCategoriesView(TestCase):
 
     def test_correct_posts_selected(self):
         response = self.client.get(self.path)
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
 
         posts_by_category = response.context['posts_by_category']
 
@@ -99,6 +102,7 @@ class TestPostsByCategoryView(TestCase):
     def test_view_context(self):
         response = self.client.get(self.path)
 
+        self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertEquals(response.context['category'], self.category1)
         self.assertEquals(response.context['title'], self.category1.name)
 
@@ -115,6 +119,8 @@ class TestPostsByCategoryView(TestCase):
         page_number = 3
         page_size = 8
         response = self.client.get(self.path, {'page': page_number})
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
 
         post_list = response.context['posts_list']
         posts = Post.published.filter(category=self.category1).order_by('-time_update')
@@ -157,12 +163,15 @@ class TestPostsByTagsView(TestCase):
     def test_view_context(self):
         response = self.client.get(self.path)
 
+        self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertEquals(response.context['tag'], self.tag1)
         self.assertEquals(response.context['title'], self.tag1.name)
 
     #
     def test_view_queryset(self):
         response = self.client.get(self.path)
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
 
         post_list = response.context['posts_list']
         posts = Post.published.filter(tags=self.tag1)
@@ -175,6 +184,8 @@ class TestPostsByTagsView(TestCase):
         page_number = 1
         page_size = 8
         response = self.client.get(self.path, {'page': page_number})
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
 
         post_list = response.context['posts_list']
         posts = Post.published.filter(tags=self.tag1).order_by('-time_update')
@@ -214,10 +225,13 @@ class TestPostsSearchView(TestCase):
     def test_view_context(self):
         response = self.client.get(self.path)
 
+        self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertEquals(response.context['title'], 'Результаты поиска')
 
     def test_view_queryset(self):
         response = self.client.get(self.path, {'search_query': 'Test 1'})
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
 
         post_list = response.context['posts_list']
         posts = Post.published.filter(title__icontains='Test 1')
@@ -229,6 +243,8 @@ class TestPostsSearchView(TestCase):
         page_number = 2
         page_size = 8
         response = self.client.get(self.path, {'search_query': 'Test 1', 'page': page_number})
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
 
         post_list = response.context['posts_list']
         posts = Post.published.filter(title__icontains='Test 1')
@@ -271,6 +287,7 @@ class TestPostsExtendedSearchView(TestCase):
     def test_view_context(self):
         response = self.client.get(self.path, {'category': self.category1.pk})
 
+        self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertEquals(response.context['title'], 'Поиск')
 
         categories = Category.objects.all()
@@ -287,6 +304,8 @@ class TestPostsExtendedSearchView(TestCase):
             self.path,
             {'category': self.category1.pk, 'tags': [self.tags[0].pk, self.tags[2].pk]}
         )
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
 
         post_list = response.context['posts_list']
 
@@ -308,6 +327,8 @@ class TestPostsExtendedSearchView(TestCase):
             self.path,
             {'category': self.category1.pk, 'tags': [self.tags[0].pk, self.tags[2].pk]}
         )
+
+        self.assertEquals(response.status_code, HTTPStatus.OK)
 
         post_list = response.context['posts_list']
         posts = (Post.published
@@ -431,6 +452,7 @@ class TestMyPostsCreateView(TestCase):
         self.client.login(username='user1', password='password')
         response = self.client.get(self.path)
 
+        self.assertEquals(response.status_code, HTTPStatus.OK)
         self.assertIn('draft', response.context)
         self.assertIn('published', response.context)
 
