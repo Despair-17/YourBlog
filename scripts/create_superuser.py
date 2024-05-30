@@ -1,17 +1,15 @@
 import os
 import sys
 
-from blog.settings.prod import DEBUG, env
-
 import django
 from django.contrib.auth import get_user_model
 
 project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(project_path)
 
-value_environ = 'dev' if DEBUG else 'prod'
+from blog.settings.prod import DEBUG, env  # noqa
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'blog.settings.{value_environ}')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'blog.settings.prod')
 
 django.setup()
 
