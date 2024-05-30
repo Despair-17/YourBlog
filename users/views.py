@@ -1,17 +1,15 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-from django.shortcuts import render
-
+from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
-
+from django.shortcuts import render
 from django.urls import reverse_lazy
-
 from django.views.generic import CreateView, UpdateView
 
 from main.utils import DataMixin
-from .forms import LoginUserForm, RegisterUserForm, ProfileUserForm, PasswordChangeUserForm
+
+from .forms import LoginUserForm, PasswordChangeUserForm, ProfileUserForm, RegisterUserForm
 from .models import User
 
 
@@ -40,7 +38,7 @@ class ProfileUserView(DataMixin, LoginRequiredMixin, UpdateView):
     form_class = ProfileUserForm
     success_url = reverse_lazy('users:profile')
 
-    def get_object(self, queryset=None) -> User:
+    def get_object(self, queryset: QuerySet | None = None) -> User:
         return self.request.user
 
 

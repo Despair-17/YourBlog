@@ -5,8 +5,9 @@ from django.db.models import Count
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Category, Post
 from taggit.models import Tag
+
+from .models import Category, Post
 
 
 class TestAllCategoriesView(TestCase):

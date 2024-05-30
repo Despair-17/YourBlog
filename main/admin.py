@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Main, About, FAQ
+from .models import About, FAQ, Main
 
 admin.site.site_header = 'Администрирование YourBlog'
 

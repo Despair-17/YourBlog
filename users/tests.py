@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.urls import reverse
 
 
@@ -267,7 +267,7 @@ class PasswordChangeUserView(TestCase):
         response = self.client.post(self.path, data=form_data)
 
         self.assertEquals(response.status_code, HTTPStatus.FOUND)
-        self.assertRedirects(response, reverse("users:password_change_done"))
+        self.assertRedirects(response, reverse('users:password_change_done'))
 
     def test_view_form_invalid(self):
         self.client.login(username=self.user_data['username'], password=self.user_data['password'])

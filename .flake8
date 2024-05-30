@@ -1,0 +1,47 @@
+[flake8]
+max-line-length = 120
+exclude =
+    .git,
+    __pycache__,
+    migrations,
+ignore =
+    E203,
+    E266,
+    E501,
+    W503,
+    F401,
+    D100,
+    D101,
+    D102,
+    D103,
+    D104,
+    D105,
+    D107,
+    ANN101,
+max-complexity = 10
+docstring-convention = google
+select = B,B9,S,C4,Q,V,D,I,ANN
+
+# Per-file ignores
+per-file-ignores =
+    */forms.py: D106,
+    */models.py: D106,
+    */tests.py: ANN,S106
+
+# Django-specific settings
+[flake8-django]
+django-settings-module = blog.settings.dev
+
+# Import order settings
+import-order-style = google
+application-import-names = blog,main,posts,users
+
+# flake8-docstrings specific settings
+[doc8]
+ignore = D100,D104,D105,D107
+
+# flake8-annotations specific settings
+[flake8-annotations]
+suppress-none-returning = True
+suppress-dummy-args = True
+mypy-init-return = True

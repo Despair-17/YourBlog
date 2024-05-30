@@ -1,11 +1,11 @@
 from django.contrib import admin
-
-from django.utils.safestring import mark_safe
-
-from .models import Post
-from .models import Category
+from django.db.models import QuerySet
+from django.http import HttpRequest
+from django.utils.html import format_html
 
 from guardian.admin import GuardedModelAdmin
+
+from .models import Category, Post
 
 
 @admin.register(Post)
@@ -24,19 +24,23 @@ class PostAdmin(GuardedModelAdmin):
     save_on_top = True
 
     @admin.display(description='Изображение')
-    def post_image(self, post: Post):
+    def post_image(self, post: Post) -> str:
         if post.image and post.image.url:
-            return mark_safe(f'<a href="{post.image.url}" target="_blank">'
-                             f'<img src="{post.image.url}" alt="{post.title}" height=50 width=50></a>')
+            return format_html(
+                '<a href="{}" target="_blank"><img src="{}" alt="{}" height="50" width="50"></a>',
+                post.image.url,
+                post.image.url,
+                post.title
+            )
         return 'Нет картинки'
 
     @admin.action(description='Опубликовать выбранные записи')
-    def set_published(self, request, queryset):
+    def set_published(self, request: HttpRequest, queryset: QuerySet) -> None:
         count = queryset.update(is_published=Post.Status.PUBLISHED)
         self.message_user(request, f'Опубликовано {count} записей.')
 
     @admin.action(description='Снять с публикации выбранные записи')
-    def set_draft(self, request, queryset):
+    def set_draft(self, request: HttpRequest, queryset: QuerySet) -> None:
         count = queryset.update(is_published=Post.Status.DRAFT)
         self.message_user(request, f'Сняты {count} записей c публикации.')
 

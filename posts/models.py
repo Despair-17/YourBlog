@@ -1,12 +1,15 @@
-from django.db import models
+from typing import Any
+
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.db.models import QuerySet
 from django.urls import reverse
 
-from taggit.managers import TaggableManager
-
 from django_ckeditor_5.fields import CKEditor5Field
+
 from guardian.shortcuts import assign_perm
+
+from taggit.managers import TaggableManager
 
 
 class PublishedManager(models.Manager):
@@ -15,9 +18,6 @@ class PublishedManager(models.Manager):
 
 
 class Post(models.Model):
-    objects = models.Manager()
-    published = PublishedManager()
-
     class Status(models.IntegerChoices):
         PUBLISHED = (True, 'Опубликовано')
         DRAFT = (False, 'Черновик')
@@ -59,7 +59,7 @@ class Post(models.Model):
     )
 
     is_published = models.BooleanField(
-        choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),
+        choices=tuple((bool(x[0]), x[1]) for x in Status.choices),
         default=Status.DRAFT,
         verbose_name='Статус'
     )
@@ -80,6 +80,9 @@ class Post(models.Model):
         related_name='posts',
     )
 
+    objects = models.Manager()
+    published = PublishedManager()
+
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
@@ -88,13 +91,13 @@ class Post(models.Model):
     def __str__(self) -> str:
         return self.title
 
-    def get_absolute_url(self) -> str:
-        return reverse('post', kwargs={'post_slug': self.slug})
-
-    def save(self, *args, **kwargs):
+    def save(self, *args: tuple[Any], **kwargs: dict[str, Any]) -> None:
         super().save(*args, **kwargs)
         assign_perm('change_post', self.author, self)
         assign_perm('delete_post', self.author, self)
+
+    def get_absolute_url(self) -> str:
+        return reverse('post', kwargs={'post_slug': self.slug})
 
 
 class Category(models.Model):

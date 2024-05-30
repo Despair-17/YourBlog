@@ -11,11 +11,11 @@ class DataMixin:
     title_page = None
     extra_context = {}
 
-    def __init__(self):
+    def __init__(self) -> None:
         if self.title_page:
             self.extra_context['title'] = self.title_page
 
     @staticmethod
-    def get_context_mixin(context: dict[str, Any], **kwargs) -> dict[str, Any]:
+    def get_context_mixin(context: dict[str, Any], **kwargs: dict[str, Any]) -> dict[str, Any]:
         context.update(kwargs)
         return context

@@ -1,15 +1,17 @@
 from typing import Any
 
-from django.http import HttpRequest, JsonResponse
-from django.urls import reverse_lazy
-from django.views.generic import TemplateView, FormView
-from django.core.mail import send_mail
+from blog.settings.base import CACHE_TTL_FCH, CONTACT_EMAIL, DEFAULT_FROM_EMAIL
+
 from django.core.cache import cache
+from django.core.mail import send_mail
+from django.forms import Form
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.urls import reverse_lazy
+from django.views.generic import FormView, TemplateView
 
 from .forms import ContactForm
-from .models import Main, About, FAQ
+from .models import About, FAQ, Main
 from .utils import DataMixin
-from blog.settings.base import DEFAULT_FROM_EMAIL, CONTACT_EMAIL, CACHE_TTL_FCH
 
 
 class HomePageView(DataMixin, TemplateView):
@@ -17,7 +19,7 @@ class HomePageView(DataMixin, TemplateView):
     model = Main
     title_page = 'YourBlog'
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         cache_key = 'main_obj'
@@ -36,7 +38,7 @@ class AboutPageView(DataMixin, TemplateView):
     model = About
     title_page = 'О сайте'
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs:dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         cache_key = 'about_obj'
@@ -55,7 +57,7 @@ class FAQPageView(DataMixin, TemplateView):
     model = FAQ
     title_page = 'FAQs'
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs:dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         cache_key = 'faq'
@@ -75,7 +77,7 @@ class ContactView(DataMixin, FormView):
     form_class = ContactForm
     success_url = reverse_lazy('home')
 
-    def form_valid(self, form):
+    def form_valid(self, form: Form)-> HttpResponse:
         send_mail(
             subject='Новое сообщение обратной связи',
             message=f'Имя: {form.cleaned_data["name"]}\n'
@@ -87,5 +89,5 @@ class ContactView(DataMixin, FormView):
         return super().form_valid(form)
 
 
-def health(request: HttpRequest):
+def health(request: HttpRequest) -> JsonResponse:
     return JsonResponse({'status': 'OK'})

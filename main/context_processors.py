@@ -1,8 +1,9 @@
 from typing import Any
 
+from blog.settings.base import CACHE_TTL_FCH, CACHE_TTL_NFCH
+
 from django.http import HttpRequest
 
-from blog.settings.base import CACHE_TTL_FCH, CACHE_TTL_NFCH
 from .utils import menu
 
 

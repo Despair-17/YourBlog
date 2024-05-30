@@ -1,10 +1,11 @@
 from http import HTTPStatus
 
+from captcha.models import CaptchaStore
+
 from django.test import TestCase
 from django.urls import reverse
 
-from captcha.models import CaptchaStore
-from .models import Main, About, FAQ
+from .models import About, FAQ, Main
 
 
 class TestHomePageView(TestCase):

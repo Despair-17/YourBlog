@@ -1,30 +1,34 @@
 from typing import Any
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
-from django.urls import reverse_lazy
-from django.views.generic import DetailView, TemplateView, CreateView, UpdateView, DeleteView
-from django.shortcuts import get_object_or_404
-from django.db.models.functions import RowNumber
-from django.db.models import F, Window, Count, QuerySet
-from django.core.cache import cache
+from blog.settings.base import CACHE_TTL_FCH
 
-from guardian.shortcuts import get_perms
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
+from django.db.models import Count, F, QuerySet, Window
+from django.db.models.functions import RowNumber
+from django.forms import Form
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, TemplateView, UpdateView
+
 from guardian.mixins import PermissionListMixin
-from taggit.models import Tag
+from guardian.shortcuts import get_perms
+
 from main.utils import DataMixin
 
+from taggit.models import Tag
+
 from .forms import MyPostForm
-from .models import Post, Category
+from .models import Category, Post
 from .utils import PaginatedListView
-from blog.settings.base import CACHE_TTL_FCH
 
 
 class AllCategoriesView(DataMixin, TemplateView):
     template_name = 'posts/all_categories.html'
     title_page = 'Все категории'
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         cache_key = 'all_categories'
@@ -72,7 +76,7 @@ class PostsByCategoryView(DataMixin, PaginatedListView):
 
         return posts
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         return self.get_context_mixin(context, title=self.category.name, category=self.category)
 
@@ -99,7 +103,7 @@ class PostsByTagsView(DataMixin, PaginatedListView):
 
         return posts
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         return self.get_context_mixin(context, title=self.tag.name, tag=self.tag)
 
@@ -162,7 +166,7 @@ class PostsExtendedSearchView(DataMixin, PaginatedListView):
 
         return posts
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         cache_key = f'posts_extended_search_category'
 
@@ -183,7 +187,7 @@ class PostDetailView(DataMixin, DetailView):
     slug_url_kwarg = 'post_slug'
     context_object_name = 'post'
 
-    def get_object(self, queryset=None):
+    def get_object(self, queryset: QuerySet = None) -> Post:
         cache_key = f'post_detail_{self.kwargs[self.slug_url_kwarg]}'
 
         post_obj = cache.get(cache_key)
@@ -201,7 +205,7 @@ class PostDetailView(DataMixin, DetailView):
 
         return post_obj
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         cache_key = f'post_detail_{self.kwargs[self.slug_url_kwarg]}_{self.request.user.pk}'
@@ -229,7 +233,7 @@ class MyPostsCreateView(DataMixin, LoginRequiredMixin, CreateView):
         posts = Post.objects.filter(author_id=self.request.user.pk)
         return posts
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         cache_key = f'my_posts_create_{self.request.user.pk}'
 
@@ -248,7 +252,7 @@ class MyPostsCreateView(DataMixin, LoginRequiredMixin, CreateView):
 
         return context
 
-    def form_valid(self, form):
+    def form_valid(self, form: MyPostForm) -> HttpResponse:
         form.instance.author = self.request.user
         return super().form_valid(form)
 
@@ -261,7 +265,7 @@ class MyPostsUpdateView(DataMixin, LoginRequiredMixin, PermissionListMixin, Upda
     model = Post
     permission_required = 'change_post'
 
-    def get_object(self, queryset=None):
+    def get_object(self, queryset: QuerySet = None) -> Post:
         cache_key = f'my_posts_update_{self.kwargs[self.slug_url_kwarg]}_{self.request.user.pk}'
 
         post_obj = cache.get(cache_key)
@@ -276,7 +280,7 @@ class MyPostsUpdateView(DataMixin, LoginRequiredMixin, PermissionListMixin, Upda
 
         return post_obj
 
-    def get_success_url(self):
+    def get_success_url(self) -> str:
         return reverse_lazy('post', kwargs={self.slug_url_kwarg: self.kwargs[self.slug_url_kwarg]})
 
 

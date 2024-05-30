@@ -1,19 +1,24 @@
 import os
-from django.contrib.auth import get_user_model
-from posts.models import Post, Category
+
 from blog.settings.prod import BASE_DIR
 
-content = '''Это тестовый пост для проверки пагинации постов
+from django.contrib.auth import get_user_model
+
+from posts.models import Category, Post
+
+content = """Это тестовый пост для проверки пагинации постов
 Это тестовый пост для проверки пагинации постов
 Это тестовый пост для проверки пагинации постов
 Это тестовый пост для проверки пагинации постов
 Это тестовый пост для проверки пагинации постов
-Это тестовый пост для проверки пагинации постов'''
+Это тестовый пост для проверки пагинации постов"""
 
 
 def generate_test_data(count: int) -> None:
-    """Скрип для создания тестовый записей в модель Post,
-    запускать через python manage.py runscript generate_test_data"""
+    """Скрип для создания тестовый записей в модель Post.
+
+    Запускать через python manage.py runscript generate_test_data
+    """
     user = get_user_model().objects.get(username='root')
 
     category = Category.objects.get(name='Test')
@@ -32,5 +37,5 @@ def generate_test_data(count: int) -> None:
             post.image.save('default_images.png', file, save=True)
 
 
-def run():
+def run() -> None:
     generate_test_data(50)

@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 
 class User(AbstractUser):
@@ -8,7 +8,7 @@ class User(AbstractUser):
         READER = (False, 'Читатель')
 
     is_author = models.BooleanField(
-        choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),
+        choices=tuple((bool(x[0]), x[1]) for x in Status.choices),
         default=Status.READER,
         verbose_name='Автор статей'
     )
@@ -25,3 +25,10 @@ class User(AbstractUser):
         null=True,
         verbose_name='Фотография',
     )
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self) -> str:
+        return f'{self.username}'

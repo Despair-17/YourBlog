@@ -1,9 +1,9 @@
 from datetime import datetime
-
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
+from typing import Any
 
 from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserCreationForm
 
 from users.validators import EmailExistValidator
 
@@ -70,7 +70,7 @@ class ProfileUserForm(forms.ModelForm):
             'image': forms.ClearableFileInput(attrs={'class': 'profile-image-select'}),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: tuple[Any], **kwargs: dict[str, Any]) -> None:
         user = kwargs.get('instance', None)
         self.user = user
         super().__init__(*args, **kwargs)
