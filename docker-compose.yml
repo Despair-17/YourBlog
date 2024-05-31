@@ -14,9 +14,23 @@ services:
       - "5433:5432"
     volumes:
       - ./pg_healthcheck.sh:/usr/local/bin/pg_healthcheck.sh
-    restart: on-failure
+    #    restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "chmod +x /usr/local/bin/pg_healthcheck.sh", "/usr/local/bin/pg_healthcheck.sh" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_healthcheck.sh:/usr/local/bin/redis_healthcheck.sh
+    #    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "chmod +x /usr/local/bin/redis_healthcheck.sh", "/usr/local/bin/redis_healthcheck.sh" ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -37,14 +51,43 @@ services:
     volumes:
       - static_volume:/app/static
       - media_volume:/app/media
-    restart: on-failure
+    #    restart: on-failure
     healthcheck:
       test: curl -f http://localhost:8000/api/v1/health/ || exit 1
-      interval: 10s
+      interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
 
+  celery-worker:
+    build:
+      context: .
+    container_name: celery-worker
+    command: celery -A blog worker --loglevel=info
+    env_file:
+      - .env
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      blog:
+        condition: service_healthy
+
+  celery-beat:
+    build:
+      context: .
+    container_name: celery-beat
+    command: celery -A blog beat --loglevel=INFO
+    env_file:
+      - .env
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      blog:
+        condition: service_healthy
 
   nginx:
     image: nginx:latest
@@ -57,25 +100,11 @@ services:
       - "80:80"
     depends_on:
       - blog
-    restart: on-failure
+    #    restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost/ || exit 1" ]
       interval: 10s
       timeout: 10s
-      retries: 3
-
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - ./redis_healthcheck.sh:/usr/local/bin/redis_healthcheck.sh
-    restart: on-failure
-    healthcheck:
-      test: [ "CMD-SHELL", "chmod +x /usr/local/bin/redis_healthcheck.sh", "/usr/local/bin/redis_healthcheck.sh" ]
-      interval: 10s
-      timeout: 5s
       retries: 3
 
 volumes:

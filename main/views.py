@@ -38,7 +38,7 @@ class AboutPageView(DataMixin, TemplateView):
     model = About
     title_page = 'О сайте'
 
-    def get_context_data(self, **kwargs:dict[str, Any]) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         cache_key = 'about_obj'
@@ -57,7 +57,7 @@ class FAQPageView(DataMixin, TemplateView):
     model = FAQ
     title_page = 'FAQs'
 
-    def get_context_data(self, **kwargs:dict[str, Any]) -> dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         cache_key = 'faq'
@@ -77,7 +77,7 @@ class ContactView(DataMixin, FormView):
     form_class = ContactForm
     success_url = reverse_lazy('home')
 
-    def form_valid(self, form: Form)-> HttpResponse:
+    def form_valid(self, form: Form) -> HttpResponse:
         send_mail(
             subject='Новое сообщение обратной связи',
             message=f'Имя: {form.cleaned_data["name"]}\n'

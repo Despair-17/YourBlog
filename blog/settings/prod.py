@@ -1,5 +1,10 @@
 from .base import *
 
+INSTALLED_APPS += [
+    'django_celery_results',
+    'django_celery_beat',
+]
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -23,3 +28,12 @@ CACHES = {
         'LOCATION': env.str('REDIS_CACHE_URL'),
     }
 }
+
+# Celery
+# https://docs.celeryq.dev/en/stable/django/
+
+CELERY_BROKER_URL = env.str('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'default'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_TIMEZONE = 'Europe/Moscow'
