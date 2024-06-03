@@ -2,6 +2,7 @@ from captcha.fields import CaptchaField
 
 from django import forms
 
+
 class ContactForm(forms.Form):
     name = forms.CharField(
         min_length=4,

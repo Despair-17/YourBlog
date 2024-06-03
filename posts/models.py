@@ -1,5 +1,7 @@
 from typing import Any
 
+from blog.settings.base import DEBUG
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import QuerySet
@@ -8,6 +10,8 @@ from django.urls import reverse
 from django_ckeditor_5.fields import CKEditor5Field
 
 from guardian.shortcuts import assign_perm
+
+from main.utils import get_temp_upload_file
 
 from taggit.managers import TaggableManager
 
@@ -52,7 +56,7 @@ class Post(models.Model):
     )
 
     image = models.ImageField(
-        upload_to='post_images/%Y/%m/%d/',
+        upload_to=get_temp_upload_file,
         blank=True,
         default=None,
         verbose_name='Изображение',
@@ -95,6 +99,10 @@ class Post(models.Model):
         super().save(*args, **kwargs)
         assign_perm('change_post', self.author, self)
         assign_perm('delete_post', self.author, self)
+
+        if self.image and self.image.url.startswith('/media/temp/'):
+            from .tasks import move_image_to_permanent_location
+            move_image_to_permanent_location.delay(self.pk, self.image.name)
 
     def get_absolute_url(self) -> str:
         return reverse('post', kwargs={'post_slug': self.slug})

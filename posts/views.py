@@ -6,7 +6,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.db.models import Count, F, QuerySet, Window
 from django.db.models.functions import RowNumber
-from django.forms import Form
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -266,17 +265,10 @@ class MyPostsUpdateView(DataMixin, LoginRequiredMixin, PermissionListMixin, Upda
     permission_required = 'change_post'
 
     def get_object(self, queryset: QuerySet = None) -> Post:
-        cache_key = f'my_posts_update_{self.kwargs[self.slug_url_kwarg]}_{self.request.user.pk}'
+        posts = self.model.objects.filter(slug=self.kwargs[self.slug_url_kwarg])
+        posts = posts.select_related('category', 'author')
 
-        post_obj = cache.get(cache_key)
-
-        if not post_obj:
-            posts = self.model.objects.filter(slug=self.kwargs[self.slug_url_kwarg])
-            posts = posts.select_related('category', 'author')
-
-            post_obj = get_object_or_404(posts, slug=self.kwargs[self.slug_url_kwarg])
-
-            cache.set(cache_key, post_obj, CACHE_TTL_FCH)
+        post_obj = get_object_or_404(posts, slug=self.kwargs[self.slug_url_kwarg])
 
         return post_obj
 

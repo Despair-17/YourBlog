@@ -1,5 +1,11 @@
+from typing import Any
+
+from blog.settings.base import DEBUG
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+from main.utils import get_temp_upload_file
 
 
 class User(AbstractUser):
@@ -20,7 +26,7 @@ class User(AbstractUser):
     )
 
     image = models.ImageField(
-        upload_to='users/%Y/%m/%d/',
+        upload_to=get_temp_upload_file,
         blank=True,
         null=True,
         verbose_name='Фотография',
@@ -32,3 +38,10 @@ class User(AbstractUser):
 
     def __str__(self) -> str:
         return f'{self.username}'
+
+    def save(self, *args: tuple[str], **kwargs: dict[str, Any]) -> None:
+        super().save(*args, **kwargs)
+
+        if self.image and self.image.url.startswith('/media/temp/'):
+            from .tasks import move_image_to_permanent_location
+            move_image_to_permanent_location.delay(self.pk, self.image.name)

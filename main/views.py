@@ -1,9 +1,8 @@
 from typing import Any
 
-from blog.settings.base import CACHE_TTL_FCH, CONTACT_EMAIL, DEFAULT_FROM_EMAIL
+from blog.settings.base import CACHE_TTL_FCH
 
 from django.core.cache import cache
-from django.core.mail import send_mail
 from django.forms import Form
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
@@ -11,6 +10,7 @@ from django.views.generic import FormView, TemplateView
 
 from .forms import ContactForm
 from .models import About, FAQ, Main
+from .tasks import send_feedback_email
 from .utils import DataMixin
 
 
@@ -78,13 +78,10 @@ class ContactView(DataMixin, FormView):
     success_url = reverse_lazy('home')
 
     def form_valid(self, form: Form) -> HttpResponse:
-        send_mail(
-            subject='Новое сообщение обратной связи',
-            message=f'Имя: {form.cleaned_data["name"]}\n'
-                    f'Email: {form.cleaned_data["email"]}\n'
-                    f'Сообщение: {form.cleaned_data["message"]}',
-            from_email=DEFAULT_FROM_EMAIL,
-            recipient_list=[CONTACT_EMAIL],
+        send_feedback_email.delay(
+            form.cleaned_data['name'],
+            form.cleaned_data['email'],
+            form.cleaned_data['message'],
         )
         return super().form_valid(form)
 

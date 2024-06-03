@@ -46,14 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django_extensions',
-
     'main.apps.MainConfig',
     'posts.apps.PostsConfig',
     'users.apps.UsersConfig',
 
     'captcha',
     'django_ckeditor_5',
+    'django_extensions',
+    'django_cleanup.apps.CleanupConfig',
     'guardian',
     'taggit',
 ]
@@ -147,7 +147,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Cache lifetime
 
-CACHE_TTL_FCH = 60
+CACHE_TTL_FCH = 10
 CACHE_TTL_NFCH = 60  # 86400
 
 # Internationalization
@@ -190,6 +190,7 @@ TAGGIT_STRIP_UNICODE_WHEN_SLUGIFYING = True
 # https://pypi.org/project/django-ckeditor-5/
 
 CKEDITOR_5_CUSTOM_CSS = 'css/ckeditor5/admin_dark_mode_fix.css'
+CKEDITOR_5_FILE_STORAGE = 'posts.storage.PostContentStorage'
 
 customColorPalette = [
     {
